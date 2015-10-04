@@ -13,6 +13,7 @@ import utils.exceptions.WTFException;
 import utils.logging.Log;
 import utils.os.CrossSystem;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Method;
@@ -23,6 +24,7 @@ import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -74,13 +76,13 @@ public class Application {
         return Application.APP_FOLDER;
     }
 
-    //
-//    /**
-//     * sets current Application Folder and Jar ID. MUST BE SET at startup! Can only be set once!
-//     *
-//     * @param newAppFolder
-//     * @param newJar
-//     */
+
+    /**
+     * sets current Application Folder and Jar ID. MUST BE SET at startup! Can only be set once!
+     *
+     * @param newAppFolder
+     * @param newJar
+     */
     public synchronized static void setApplication(final String newAppFolder) {
         Application.ROOT = null;
         Application.APP_FOLDER = newAppFolder;
@@ -93,75 +95,71 @@ public class Application {
     public static String getHome() {
         return Application.getRoot(Application.class);
     }
-//
-//    /**
-//     * @param class1
-//     * @return
-//     */
-//    public static String getPackagePath(final Class<?> class1) {
-//        // TODO Auto-generated method stub
-//        return class1.getPackage().getName().replace('.', '/') + "/";
-//    }
 
-    //
-//    public static URL getHomeURL() {
-//
-//        try {
-//            return new File(Application.getHome()).toURI().toURL();
-//        } catch (final MalformedURLException e) {
-//            throw new WTFException(e);
-//        }
-//    }
-//
-//    // returns the jar filename of clazz
-//    public static File getJarFile(final Class<?> clazz) {
-//        final String name = clazz.getName().replaceAll("\\.", "/") + ".class";
-//        final URL url = Application.getRessourceURL(name);
-//        final String prot = url.getProtocol();
-//        final String path = url.getPath();
-//        Log.L.info(url + "");
-//        if (!"jar".equals(prot)) {
-//            throw new WTFException("Works in Jared mode only");
-//        }
-//        final int index = path.indexOf(".jar!");
-//        if (index < 0) {
-//            throw new WTFException("Works in Jared mode only");
-//        }
-//        try {
-//            return new File(new URL(path.substring(0, index + 4)).toURI());
-//        } catch (final MalformedURLException e) {
-//            Log.exception(Level.WARNING, e);
-//
-//        } catch (final URISyntaxException e) {
-//            Log.exception(Level.WARNING, e);
-//
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * @param object
-//     * @return
-//     */
-//    public static String getJarName(Class<?> clazz) {
-//        if (clazz == null) {
-//            clazz = Application.class;
-//        }
-//        final String name = clazz.getName().replaceAll("\\.", "/") + ".class";
-//        final String url = Application.getRessourceURL(name).toString();
-//
-//        final int index = url.indexOf(".jar!");
-//        if (index < 0) {
-//            throw new IllegalStateException("No JarName Found");
-//        }
-//        try {
-//            return new File(new URL(url.substring(4, index + 4)).toURI()).getName();
-//        } catch (final Exception e) {
-//
-//        }
-//        throw new IllegalStateException("No JarName Found");
-//    }
-//
+    /**
+     * @param class1
+     * @return
+     */
+    public static String getPackagePath(final Class<?> class1) {
+        // TODO Auto-generated method stub
+        return class1.getPackage().getName().replace('.', '/') + "/";
+    }
+
+
+    public static URL getHomeURL() {
+
+        try {
+            return new File(Application.getHome()).toURI().toURL();
+        } catch (final MalformedURLException e) {
+            throw new WTFException(e);
+        }
+    }
+
+    // returns the jar filename of clazz
+    public static File getJarFile(final Class<?> clazz) {
+        final String name = clazz.getName().replaceAll("\\.", "/") + ".class";
+        final URL url = Application.getRessourceURL(name);
+        final String prot = url.getProtocol();
+        final String path = url.getPath();
+        Log.L.info(url + "");
+        if (!"jar".equals(prot)) {
+            throw new WTFException("Works in Jared mode only");
+        }
+        final int index = path.indexOf(".jar!");
+        if (index < 0) {
+            throw new WTFException("Works in Jared mode only");
+        }
+        try {
+            return new File(new URL(path.substring(0, index + 4)).toURI());
+        } catch (final MalformedURLException e) {
+            Log.exception(Level.WARNING, e);
+
+        } catch (final URISyntaxException e) {
+            Log.exception(Level.WARNING, e);
+
+        }
+        return null;
+    }
+
+    public static String getJarName(Class<?> clazz) {
+        if (clazz == null) {
+            clazz = Application.class;
+        }
+        final String name = clazz.getName().replaceAll("\\.", "/") + ".class";
+        final String url = Application.getRessourceURL(name).toString();
+
+        final int index = url.indexOf(".jar!");
+        if (index < 0) {
+            throw new IllegalStateException("No JarName Found");
+        }
+        try {
+            return new File(new URL(url.substring(4, index + 4)).toURI()).getName();
+        } catch (final Exception e) {
+
+        }
+        throw new IllegalStateException("No JarName Found");
+    }
+
     public static long getJavaVersion() {
         if (Application.javaVersion > 0) {
             return Application.javaVersion;
@@ -269,9 +267,9 @@ public class Application {
         return null;
     }
 
-    //    /**
-//     * Detects the applications home directory. it is either the pass of the appworkutils.jar or HOME/
-//     */
+        /**
+     * Detects the applications home directory. it is either the pass of the appworkutils.jar or HOME/
+     */
     public static String getRoot(final Class<?> rootOfClazz) {
 
         if (Application.ROOT != null) {
@@ -334,23 +332,23 @@ public class Application {
         // do not use Log.L here. this might be null
         return Application.ROOT;
     }
-//
-//    /**
-//     * @param class1
-//     * @param subPaths
-//     *            TODO
-//     * @return
-//     */
-//    public static URL getRootUrlByClass(final Class<?> class1, final String subPaths) {
-//        // TODO Auto-generated method stub
-//        try {
-//            return Application.getRootByClass(class1, subPaths).toURI().toURL();
-//        } catch (final MalformedURLException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+
+    /**
+     * @param class1
+     * @param subPaths
+     *            TODO
+     * @return
+     */
+    public static URL getRootUrlByClass(final Class<?> class1, final String subPaths) {
+        // TODO Auto-generated method stub
+        try {
+            return Application.getRootByClass(class1, subPaths).toURI().toURL();
+        } catch (final MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static File getRootByClass(final Class<?> class1, final String subPaths) {
         // this is the jar file
@@ -415,63 +413,60 @@ public class Application {
         Application.JVM64BIT = is64BitJVM;
         return is64BitJVM;
     }
-//
-//    /**
-//     * checks current java version for known issues/bugs or unsupported ones
-//     *
-//     * @param support15
-//     * @return
-//     */
-//    public static boolean isOutdatedJavaVersion(final boolean supportJAVA15) {
-//        final long java = Application.getJavaVersion();
-//        if (java < Application.JAVA16 && !CrossSystem.isMac()) {
-//            Log.L.warning("Java 1.6 should be available on your System, please upgrade!");
-//            /* this is no mac os, so please use java>=1.6 */
-//            return true;
-//        }
-//        if (java < Application.JAVA16 && !supportJAVA15) {
-//            Log.L.warning("Java 1.5 no longer supported!");
-//            /* we no longer support java 1.5 */
-//            return true;
-//        }
-//        if (java >= 16018000l && java < 16019000l) {
-//            Log.L.warning("Java 1.6 Update 18 has a serious bug in garbage collector!");
-//            /*
-//             * java 1.6 update 18 has a bug in garbage collector, causes java crashes
-//             *
-//             * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6847956
-//             */
-//            return true;
-//        }
-//        if (java >= 16010000l && java < 16011000l) {
-//            Log.L.warning("Java 1.6 Update 10 has a swing bug!");
-//            /*
-//             * 16010.26 http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6657923
-//             */
-//            return true;
-//        }
-//        if (CrossSystem.isMac() && java >= Application.JAVA17 && java < 17006000l) {
-//            Log.L.warning("leaking semaphores bug");
-//            /*
-//             * leaking semaphores http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7166379
-//             */
-//            return true;
-//        }
-//        if (CrossSystem.isMac() && java >= 17250000l && java < 17550000l) {
-//            Log.L.warning("freezing AppKit thread bug");
-//            /*
-//             * http://bugs.java.com/view_bug.do?bug_id=8025588
-//             *
-//             * Frozen AppKit thread
-//             */
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    /**
-//     * @param logger
-//     */
+
+    /**
+     * checks current java version for known issues/bugs or unsupported ones
+     */
+    public static boolean isOutdatedJavaVersion(final boolean supportJAVA15) {
+        final long java = Application.getJavaVersion();
+        if (java < Application.JAVA16 && !CrossSystem.isMac()) {
+            Log.L.warning("Java 1.6 should be available on your System, please upgrade!");
+            /* this is no mac os, so please use java>=1.6 */
+            return true;
+        }
+        if (java < Application.JAVA16 && !supportJAVA15) {
+            Log.L.warning("Java 1.5 no longer supported!");
+            /* we no longer support java 1.5 */
+            return true;
+        }
+        if (java >= 16018000l && java < 16019000l) {
+            Log.L.warning("Java 1.6 Update 18 has a serious bug in garbage collector!");
+            /*
+             * java 1.6 update 18 has a bug in garbage collector, causes java crashes
+             *
+             * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6847956
+             */
+            return true;
+        }
+        if (java >= 16010000l && java < 16011000l) {
+            Log.L.warning("Java 1.6 Update 10 has a swing bug!");
+            /*
+             * 16010.26 http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6657923
+             */
+            return true;
+        }
+        if (CrossSystem.isMac() && java >= Application.JAVA17 && java < 17006000l) {
+            Log.L.warning("leaking semaphores bug");
+            /*
+             * leaking semaphores http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7166379
+             */
+            return true;
+        }
+        if (CrossSystem.isMac() && java >= 17250000l && java < 17550000l) {
+            Log.L.warning("freezing AppKit thread bug");
+            /*
+             * http://bugs.java.com/view_bug.do?bug_id=8025588
+             *
+             * Frozen AppKit thread
+             */
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param logger
+     */
 //    public static void printSystemProperties(final LogInterface logger) {
 //        final Properties p = System.getProperties();
 //        final Enumeration keys = p.keys();
@@ -554,10 +549,6 @@ public class Application {
         return ret;
     }
 
-    //
-//    /**
-//     *
-//     */
     public static void redirectOutputStreams() {
         if (Application.REDIRECTED) {
             return;
@@ -765,70 +756,70 @@ public class Application {
         }
 
     }
-//
-//    /**
-//     * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
-//     *
-//     * @param string
-//     * @return
-//     */
-//    public static File generateNumberedTempResource(String string) {
-//        return Application.generateNumbered(Application.getTempResource(string));
-//    }
-//
-//    /**
-//     * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
-//     *
-//     * @param string
-//     * @return
-//     */
-//    public static File generateNumberedResource(String string) {
-//        return Application.generateNumbered(Application.getResource(string));
-//
-//    }
-//
-//    /**
-//     * @param resource
-//     */
-//    private static File generateNumbered(File orgFile) {
-//        int i = 0;
-//
-//        String extension = Files.getExtension(orgFile.getName());
-//        File file = null;
-//        while (file == null || file.exists()) {
-//            i++;
-//
-//            if (extension != null) {
-//                file = new File(orgFile.getParentFile(), orgFile.getName().substring(0, orgFile.getName().length() - extension.length() - 1) + "." + i + "." + extension);
-//            } else {
-//                file = new File(orgFile.getParentFile(), orgFile.getName() + "." + i);
-//            }
-//
-//        }
-//        return file;
-//
-//    }
-//
-//    /**
-//     * check if the synthetica look and feel is used. make sure not to call this before you set the final look and feel! Else all calls will
-//     * return the wrong results.
-//     *
-//     * @return
-//     */
-//    public static boolean isSyntheticaLookAndFeel() {
-//
-//        if (IS_SYNTHETICA != null) {
-//            return IS_SYNTHETICA;
-//        }
-//        Class<?> cls;
-//        try {
-//            cls = Class.forName("de.javasoft.plaf.synthetica.SyntheticaLookAndFeel");
-//
-//            IS_SYNTHETICA = cls.isAssignableFrom(UIManager.getLookAndFeel().getClass());
-//        } catch (Throwable e) {
-//            IS_SYNTHETICA = false;
-//        }
-//        return IS_SYNTHETICA;
-//    }
-//
+
+    /**
+     * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
+     *
+     * @param string
+     * @return
+     */
+    public static File generateNumberedTempResource(String string) {
+        return Application.generateNumbered(Application.getTempResource(string));
+    }
+
+    /**
+     * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
+     *
+     * @param string
+     * @return
+     */
+    public static File generateNumberedResource(String string) {
+        return Application.generateNumbered(Application.getResource(string));
+
+    }
+
+    /**
+     * @param resource
+     */
+    private static File generateNumbered(File orgFile) {
+        int i = 0;
+
+        String extension = Files.getExtension(orgFile.getName());
+        File file = null;
+        while (file == null || file.exists()) {
+            i++;
+
+            if (extension != null) {
+                file = new File(orgFile.getParentFile(), orgFile.getName().substring(0, orgFile.getName().length() - extension.length() - 1) + "." + i + "." + extension);
+            } else {
+                file = new File(orgFile.getParentFile(), orgFile.getName() + "." + i);
+            }
+
+        }
+        return file;
+
+    }
+
+    /**
+     * check if the synthetica look and feel is used. make sure not to call this before you set the final look and feel! Else all calls will
+     * return the wrong results.
+     *
+     * @return
+     */
+    public static boolean isSyntheticaLookAndFeel() {
+
+        if (IS_SYNTHETICA != null) {
+            return IS_SYNTHETICA;
+        }
+        Class<?> cls;
+        try {
+            cls = Class.forName("de.javasoft.plaf.synthetica.SyntheticaLookAndFeel");
+
+            IS_SYNTHETICA = cls.isAssignableFrom(UIManager.getLookAndFeel().getClass());
+        } catch (Throwable e) {
+            IS_SYNTHETICA = false;
+        }
+        return IS_SYNTHETICA;
+    }
+
 }

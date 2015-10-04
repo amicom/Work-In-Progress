@@ -1,0 +1,14 @@
+group 'com.jdownloader'
+version '3.0'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "startup.Main"
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}

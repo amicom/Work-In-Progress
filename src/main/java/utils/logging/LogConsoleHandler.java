@@ -55,11 +55,8 @@ public class LogConsoleHandler extends ConsoleHandler {
         if (lallowedLoggerNames.size() == 0) {
             return true;
         }
-        if (allowedLoggerNames.contains(record.getLoggerName().toLowerCase(Locale.ENGLISH))) {
-            return true;
-        }
+        return allowedLoggerNames.contains(record.getLoggerName().toLowerCase(Locale.ENGLISH));
 
-        return false;
     }
 
     @Override

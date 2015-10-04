@@ -9,10 +9,11 @@
  */
 package storage.simplejson.mapper;
 
-import org.appwork.exceptions.WTFException;
-import org.appwork.storage.config.annotations.ConvertValueFrom;
-import org.appwork.storage.config.annotations.JSonFieldName;
-import org.appwork.utils.logging.Log;
+
+import storage.config.annotations.ConvertValueFrom;
+import storage.config.annotations.JSonFieldName;
+import utils.exceptions.WTFException;
+import utils.logging.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,10 +30,6 @@ public class Setter {
     private final Type type;
     private Class<?> convertFromClass;
 
-    /**
-     * @param substring
-     * @param m
-     */
     public Setter(final String name, final Method m) {
 
         final JSonFieldName jsFieldName = m.getAnnotation(JSonFieldName.class);

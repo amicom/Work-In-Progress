@@ -1,6 +1,7 @@
 package utils.net.httpconnection;
 
-import org.appwork.utils.net.socketconnection.Socks5SocketConnection;
+
+import utils.net.socketconnection.Socks5SocketConnection;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -9,7 +9,8 @@
  */
 package storage.config.handler;
 
-import org.appwork.storage.config.annotations.DefaultStringValue;
+
+import storage.config.annotations.DefaultStringValue;
 
 import java.lang.annotation.Annotation;
 

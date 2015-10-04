@@ -296,7 +296,7 @@ public class FtpConnection implements Runnable, StateMachineInterface {
      * @throws FtpFileNotExistException
      * @throws IOException
      */
-    private void onDELE(final String[] commandParts) throws FtpFileNotExistException, FtpException, IOException {
+    private void onDELE(final String[] commandParts) throws FtpException, IOException {
         this.ftpServer.getFtpCommandHandler().removeFile(this.connectionState, this.buildParameter(commandParts));
         this.write(250, "\"" + this.buildParameter(commandParts) + "\" removed.");
     }
@@ -816,7 +816,7 @@ public class FtpConnection implements Runnable, StateMachineInterface {
         this.writer.flush();
     }
 
-    public static enum COMMAND {
+    public enum COMMAND {
         /* commands starting with X are experimental, see RFC1123 */
         ABOR(true, 0),
         REST(true, 1),
@@ -857,11 +857,11 @@ public class FtpConnection implements Runnable, StateMachineInterface {
         private int maxSize;
         private boolean needLogin;
 
-        private COMMAND(final boolean needLogin, final int paramSize) {
+        COMMAND(final boolean needLogin, final int paramSize) {
             this(needLogin, paramSize, paramSize);
         }
 
-        private COMMAND(final boolean needLogin, final int paramSize, final int maxSize) {
+        COMMAND(final boolean needLogin, final int paramSize, final int maxSize) {
             this.paramSize = paramSize;
             this.needLogin = needLogin;
             this.maxSize = maxSize;
@@ -874,10 +874,7 @@ public class FtpConnection implements Runnable, StateMachineInterface {
             if (length == this.maxSize) {
                 return true;
             }
-            if (this.maxSize == -1) {
-                return true;
-            }
-            return false;
+            return this.maxSize == -1;
         }
 
         public boolean needsLogin() {
@@ -885,8 +882,8 @@ public class FtpConnection implements Runnable, StateMachineInterface {
         }
     }
 
-    private static enum TYPE {
+    private enum TYPE {
         ASCII,
-        BINARY;
+        BINARY
     }
 }

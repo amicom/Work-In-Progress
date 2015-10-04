@@ -9,7 +9,8 @@
  */
 package utils.net.meteredconnection;
 
-import org.appwork.utils.speedmeter.SpeedMeterInterface;
+
+import utils.speedmeter.SpeedMeterInterface;
 
 import java.io.IOException;
 import java.io.OutputStream;

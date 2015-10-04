@@ -29,7 +29,7 @@ public enum Interpolation {
     BICUBIC(RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     private Object hint;
 
-    private Interpolation(final Object hint) {
+    Interpolation(final Object hint) {
         this.hint = hint;
     }
 

@@ -22,8 +22,8 @@ import utils.net.httpserver.session.HttpSession;
  */
 public interface HttpSessionRequestHandler<T extends HttpSession> {
 
-    public abstract boolean onGetSessionRequest(final T session, final GetRequest request, final HttpResponse response) throws BasicRemoteAPIException;
+    boolean onGetSessionRequest(final T session, final GetRequest request, final HttpResponse response) throws BasicRemoteAPIException;
 
-    public abstract boolean onPostSessionRequest(final T session, final PostRequest request, final HttpResponse response) throws BasicRemoteAPIException;
+    boolean onPostSessionRequest(final T session, final PostRequest request, final HttpResponse response) throws BasicRemoteAPIException;
 
 }

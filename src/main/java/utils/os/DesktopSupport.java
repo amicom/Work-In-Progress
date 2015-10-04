@@ -20,20 +20,20 @@ import java.net.URL;
  */
 public interface DesktopSupport {
 
-    public void browseURL(URL url) throws IOException, URISyntaxException;
+    void browseURL(URL url) throws IOException, URISyntaxException;
 
     boolean isBrowseURLSupported();
 
     boolean isOpenFileSupported();
 
-    public void openFile(File file) throws IOException;
+    void openFile(File file) throws IOException;
 
-    public boolean shutdown(boolean force);
+    boolean shutdown(boolean force);
 
-    public boolean standby();
+    boolean standby();
 
-    public boolean hibernate();
+    boolean hibernate();
 
-    public String getDefaultDownloadDirectory();
+    String getDefaultDownloadDirectory();
 
 }

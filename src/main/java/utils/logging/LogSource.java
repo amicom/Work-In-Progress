@@ -51,7 +51,7 @@ public class LogSource extends Logger implements LogInterface {
      * >0 = limited
      */
     public LogSource(final String name, final int maxLogRecordsInMemory) {
-        this(name, (String) null);
+        this(name, null);
         this.maxLogRecordsInMemory = maxLogRecordsInMemory;
         super.setUseParentHandlers(false);
         this.setLevel(Level.ALL);

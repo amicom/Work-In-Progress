@@ -16,8 +16,8 @@ package utils.net.httpserver.session;
 public interface HttpSession {
 
 
-    public String getSessionID();
+    String getSessionID();
 
-    public boolean isAlive();
+    boolean isAlive();
 
 }

@@ -1,8 +1,8 @@
 package utils.net.httpconnection;
 
-import org.appwork.utils.Regex;
-import org.appwork.utils.StringUtils;
-import org.appwork.utils.encoding.Base64;
+import utils.Regex;
+import utils.StringUtils;
+import utils.encoding.Base64;
 
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
@@ -171,7 +171,7 @@ public class HTTPProxyHTTPConnectionImpl extends HTTPConnectionImpl {
                     /*
                      * httpPath needs to be like normal http request, eg /index.html
                      */
-                    this.httpPath = new org.appwork.utils.Regex(this.httpURL.toString(), "https?://.*?(/.+)").getMatch(0);
+                    this.httpPath = new Regex(this.httpURL.toString(), "https?://.*?(/.+)").getMatch(0);
                     if (this.httpPath == null) {
                         this.httpPath = "/";
                     }

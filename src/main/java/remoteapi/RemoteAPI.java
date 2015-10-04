@@ -9,26 +9,25 @@
  */
 package remoteapi;
 
-import org.appwork.net.protocol.http.HTTPConstants;
-import org.appwork.net.protocol.http.HTTPConstants.ResponseCode;
-import org.appwork.remoteapi.annotations.AllowResponseAccess;
-import org.appwork.remoteapi.annotations.ApiAuthLevel;
-import org.appwork.remoteapi.annotations.ApiNamespace;
-import org.appwork.remoteapi.annotations.ApiSessionRequired;
-import org.appwork.remoteapi.exceptions.*;
-import org.appwork.remoteapi.responsewrapper.DataObject;
-import org.appwork.storage.JSonStorage;
-import org.appwork.storage.TypeRef;
-import org.appwork.utils.Regex;
-import org.appwork.utils.net.ChunkedOutputStream;
-import org.appwork.utils.net.HTTPHeader;
-import org.appwork.utils.net.httpserver.handler.HttpRequestHandler;
-import org.appwork.utils.net.httpserver.requests.GetRequest;
-import org.appwork.utils.net.httpserver.requests.HttpRequest;
-import org.appwork.utils.net.httpserver.requests.KeyValuePair;
-import org.appwork.utils.net.httpserver.requests.PostRequest;
-import org.appwork.utils.net.httpserver.responses.HttpResponse;
-import org.appwork.utils.reflection.Clazz;
+import http.HTTPConstants;
+import remoteapi.annotations.AllowResponseAccess;
+import remoteapi.annotations.ApiAuthLevel;
+import remoteapi.annotations.ApiNamespace;
+import remoteapi.annotations.ApiSessionRequired;
+import remoteapi.exceptions.*;
+import remoteapi.responsewrapper.DataObject;
+import storage.JSonStorage;
+import storage.TypeRef;
+import utils.Regex;
+import utils.net.ChunkedOutputStream;
+import utils.net.HTTPHeader;
+import utils.net.httpserver.handler.HttpRequestHandler;
+import utils.net.httpserver.requests.GetRequest;
+import utils.net.httpserver.requests.HttpRequest;
+import utils.net.httpserver.requests.KeyValuePair;
+import utils.net.httpserver.requests.PostRequest;
+import utils.net.httpserver.responses.HttpResponse;
+import utils.reflection.Clazz;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -131,7 +130,7 @@ public class RemoteAPI implements HttpRequestHandler {
         if (gzip) {
             response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_ENCODING, "gzip"));
         }
-        response.setResponseCode(ResponseCode.SUCCESS_OK);
+        response.setResponseCode(HTTPConstants.ResponseCode.SUCCESS_OK);
         final OutputStream os = response.getOutputStream(true);
         final ChunkedOutputStream cos = new ChunkedOutputStream(os);
         final OutputStream uos;
@@ -161,14 +160,14 @@ public class RemoteAPI implements HttpRequestHandler {
                 uos.flush();
             }
 
-            private void wrapperEnd() throws UnsupportedEncodingException, IOException {
+            private void wrapperEnd() throws IOException {
                 if (this.wrapperEnd) {
                     uos.write(")".getBytes("UTF-8"));
                     this.wrapperEnd = false;
                 }
             }
 
-            private void wrapperHeader() throws UnsupportedEncodingException, IOException {
+            private void wrapperHeader() throws IOException {
                 if (this.wrapperHeader) {
                     uos.write(request.getJqueryCallback().getBytes("UTF-8"));
                     uos.write("(".getBytes("UTF-8"));
@@ -445,11 +444,6 @@ public class RemoteAPI implements HttpRequestHandler {
         return text;
     }
 
-    /**
-     * @param interfaceHandler
-     * @param string
-     * @return
-     */
     public boolean onGetRequest(final GetRequest request, final HttpResponse response) throws BasicRemoteAPIException {
         final RemoteAPIRequest apiRequest = this.createRemoteAPIRequestObject(request);
         if (apiRequest == null) {
@@ -509,10 +503,10 @@ public class RemoteAPI implements HttpRequestHandler {
                         }
                         try {
                             try {
-                                Method method = x.getClass().getMethod("getAPINamespace", new Class[]{Class.class});
+                                Method method = x.getClass().getMethod("getAPINamespace", Class.class);
                                 if (method != null) {
 
-                                    namespace = (String) method.invoke(x, new Object[]{c});
+                                    namespace = (String) method.invoke(x, c);
 
                                 }
                             } catch (NoSuchMethodException e) {
@@ -563,27 +557,14 @@ public class RemoteAPI implements HttpRequestHandler {
         }
     }
 
-    /**
-     * @param request
-     * @param response
-     * @param text
-     * @param chunked
-     *            TODO
-     * @throws UnsupportedEncodingException
-     * @throws IOException
-     */
-    public void sendText(final RemoteAPIRequest request, final RemoteAPIResponse response, String text) throws UnsupportedEncodingException, IOException {
+
+    public void sendText(final RemoteAPIRequest request, final RemoteAPIResponse response, String text) throws IOException {
         text = this.jQueryWrap(request, text);
         final byte[] bytes = text.getBytes("UTF-8");
-        response.setResponseCode(ResponseCode.SUCCESS_OK);
+        response.setResponseCode(HTTPConstants.ResponseCode.SUCCESS_OK);
         response.sendBytes(request, bytes);
     }
 
-    /**
-     * @param responseData
-     * @param responseData2
-     * @return
-     */
     public String toString(final RemoteAPIRequest request, final RemoteAPIResponse response, final Object responseData) {
         return JSonStorage.serializeToJson(new DataObject(responseData));
     }

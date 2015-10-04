@@ -19,5 +19,5 @@ import java.io.IOException;
  *
  */
 public interface HttpConnectionExceptionHandler {
-    public boolean handle(final HttpResponse response) throws IOException;
+    boolean handle(final HttpResponse response) throws IOException;
 }

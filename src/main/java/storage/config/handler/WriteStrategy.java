@@ -14,5 +14,5 @@ package storage.config.handler;
  *
  */
 public interface WriteStrategy {
-    public void write(StorageHandler<?> storageHandler, KeyHandler<?> keyHandler);
+    void write(StorageHandler<?> storageHandler, KeyHandler<?> keyHandler);
 }

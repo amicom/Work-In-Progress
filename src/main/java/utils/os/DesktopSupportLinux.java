@@ -97,10 +97,7 @@ public class DesktopSupportLinux implements DesktopSupport {
 
     @Override
     public boolean isBrowseURLSupported() {
-        if (this.customBrowse != null && this.customFile.length >= 2 || this.fallBack.isBrowseURLSupported()) {
-            return true;
-        }
-        return false;
+        return this.customBrowse != null && this.customFile.length >= 2 || this.fallBack.isBrowseURLSupported();
     }
 
     public boolean isGnomeDesktop() {
@@ -123,10 +120,7 @@ public class DesktopSupportLinux implements DesktopSupport {
 
     @Override
     public boolean isOpenFileSupported() {
-        if (this.customFile != null && this.customFile.length >= 2 || this.fallBack.isOpenFileSupported()) {
-            return true;
-        }
-        return false;
+        return this.customFile != null && this.customFile.length >= 2 || this.fallBack.isOpenFileSupported();
     }
 
     public boolean isXFCEDesktop() {
@@ -256,7 +250,7 @@ public class DesktopSupportLinux implements DesktopSupport {
         return null;
     }
 
-    public static enum WINDOW_MANAGER {
+    public enum WINDOW_MANAGER {
         XFCE,
         GNOME,
         MATE,

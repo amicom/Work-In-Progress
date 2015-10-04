@@ -434,7 +434,7 @@ public class HttpConnection implements Runnable {
 
     }
 
-    public static enum HttpConnectionType {
+    public enum HttpConnectionType {
         HEAD,
         GET,
         POST,

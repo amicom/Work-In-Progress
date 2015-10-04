@@ -23,9 +23,8 @@ import remoteapi.exceptions.AuthException;
 public interface LoginAPIInterface extends RemoteAPIInterface {
 
     @ApiDoc("invalides the current token")
-    public boolean disconnect(final RemoteAPIRequest request);
+    boolean disconnect(final RemoteAPIRequest request);
 
     @ApiDoc("returns an un/authenticated token for given username and password or \"error\" in case login failed")
-
-    public String handshake(final RemoteAPIRequest request, String user, String password) throws AuthException;
+    String handshake(final RemoteAPIRequest request, String user, String password) throws AuthException;
 }

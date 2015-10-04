@@ -10,7 +10,6 @@
 package remoteapi.exceptions;
 
 
-import http.HTTPConstants;
 import storage.JSonStorage;
 import utils.net.HTTPHeader;
 import utils.net.httpserver.HttpConnectionExceptionHandler;
@@ -20,22 +19,24 @@ import utils.net.httpserver.responses.HttpResponseInterface;
 
 import java.io.IOException;
 
+import static http.HTTPConstants.*;
+
 /**
  * @author Thomas
  * 
  */
 public class BasicRemoteAPIException extends Exception implements HttpConnectionExceptionHandler {
     /**
-     * 
+     *
      */
     private static final long     serialVersionUID = 1L;
-    private HttpRequestInterface request;
+    private HttpRequestInterface  request;
 
     private HttpResponseInterface response;
 
     private final String          type;
 
-    private final HTTPConstants.ResponseCode code;
+    private final ResponseCode code;
 
     private final Object          data;
 
@@ -43,14 +44,14 @@ public class BasicRemoteAPIException extends Exception implements HttpConnection
      * @param e
      */
     public BasicRemoteAPIException(final IOException e) {
-        this(e, "UNKNOWN", HTTPConstants.ResponseCode.SERVERERROR_INTERNAL, null);
+        this(e, "UNKNOWN", ResponseCode.SERVERERROR_INTERNAL, null);
     }
 
     /**
      * @param name
      * @param code2
      */
-    public BasicRemoteAPIException(final String name, final HTTPConstants.ResponseCode code2) {
+    public BasicRemoteAPIException(final String name, final ResponseCode code2) {
         this(null, name, code2, null);
     }
 
@@ -60,14 +61,14 @@ public class BasicRemoteAPIException extends Exception implements HttpConnection
      * @param code
      * @param data
      */
-    public BasicRemoteAPIException(final Throwable cause, final String name, final HTTPConstants.ResponseCode code, final Object data) {
+    public BasicRemoteAPIException(final Throwable cause, final String name, final ResponseCode code, final Object data) {
         super(name + "(" + code + ")", cause);
         this.data = data;
         this.type = name;
         this.code = code;
     }
 
-    public HTTPConstants.ResponseCode getCode() {
+    public ResponseCode getCode() {
         return this.code;
     }
 
@@ -97,9 +98,9 @@ public class BasicRemoteAPIException extends Exception implements HttpConnection
         bytes = str.getBytes("UTF-8");
         response.setResponseCode(this.getCode());
         /* needed for ajax/crossdomain */
-        response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_ACCESS_CONTROL_ALLOW_ORIGIN, "*"));
-        response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_TYPE, "text; charset=UTF-8"));
-        response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_LENGTH, bytes.length + ""));
+        response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_ACCESS_CONTROL_ALLOW_ORIGIN, "*"));
+        response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_CONTENT_TYPE, "text; charset=UTF-8"));
+        response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_CONTENT_LENGTH, bytes.length + ""));
         response.getOutputStream(true).write(bytes);
         response.getOutputStream(true).flush();
         return true;
@@ -115,23 +116,6 @@ public class BasicRemoteAPIException extends Exception implements HttpConnection
     }
 
     /**
-     * @param response
-     * @throws IOException
-     */
-    public boolean handle(final HttpResponse response) throws IOException {
-        byte[] bytes;
-        final String str = JSonStorage.serializeToJson(new DeviceErrorResponse(this.getType(), this.data));
-        bytes = str.getBytes("UTF-8");
-        response.setResponseCode(this.getCode());
-        /* needed for ajax/crossdomain */
-        response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_ACCESS_CONTROL_ALLOW_ORIGIN, "*"));
-        response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_TYPE, "text; charset=UTF-8"));
-        response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_LENGTH, bytes.length + ""));
-        response.getOutputStream(true).write(bytes);
-        response.getOutputStream(true).flush();
-        return true;
-
-    }    /**
      * @param response
      */
     public void setResponse(final HttpResponseInterface response) {

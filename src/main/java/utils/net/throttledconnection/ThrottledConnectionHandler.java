@@ -17,20 +17,20 @@ import java.util.List;
  */
 public interface ThrottledConnectionHandler {
 
-    public void addThrottledConnection(ThrottledConnection con);
+    void addThrottledConnection(ThrottledConnection con);
 
-    public List<ThrottledConnection> getConnections();
+    List<ThrottledConnection> getConnections();
 
-    public int getLimit();
+    int getLimit();
 
-    public void setLimit(int limit);
+    void setLimit(int limit);
 
-    public int getSpeed();
+    int getSpeed();
 
-    public long getTraffic();
+    long getTraffic();
 
-    public void removeThrottledConnection(ThrottledConnection con);
+    void removeThrottledConnection(ThrottledConnection con);
 
-    public int size();
+    int size();
 
 }

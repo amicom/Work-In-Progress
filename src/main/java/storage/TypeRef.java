@@ -28,14 +28,12 @@ public abstract class TypeRef<T> {
             return String.class;
         }
 
-        ;
     };
     public static final TypeRef<byte[]> BYTE_ARRAY = new TypeRef<byte[]>() {
         public Type getType() {
             return byte[].class;
         }
 
-        ;
     };
     public static final TypeRef<HashMap<String, Object>> HASHMAP = new TypeRef<HashMap<String, Object>>() {
     };
@@ -53,7 +51,6 @@ public abstract class TypeRef<T> {
             return String[].class;
         }
 
-        ;
     };
     private final Type type;
 

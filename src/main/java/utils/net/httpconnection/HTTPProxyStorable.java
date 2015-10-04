@@ -86,7 +86,7 @@ public class HTTPProxyStorable implements Storable {
         this.preferNativeImplementation = preferNativeImplementation;
     }
 
-    public static enum TYPE {
+    public enum TYPE {
         NONE,
         DIRECT,
         SOCKS4,

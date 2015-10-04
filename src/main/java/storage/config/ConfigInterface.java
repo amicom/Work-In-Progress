@@ -19,7 +19,7 @@ import storage.config.handler.StorageHandler;
 
 public interface ConfigInterface {
 
-    public StorageHandler<?> _getStorageHandler();
+    StorageHandler<?> _getStorageHandler();
 
     String toString();
 

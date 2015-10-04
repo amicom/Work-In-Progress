@@ -9,8 +9,9 @@
  */
 package utils.formatter;
 
-import org.appwork.utils.BinaryLogic;
-import org.appwork.utils.Regex;
+
+import utils.BinaryLogic;
+import utils.Regex;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -163,9 +164,9 @@ public class TimeFormatter {
             res = Double.parseDouble(matches[0][0] + "." + matches[0][1]);
         }
 
-        if (org.appwork.utils.Regex.matches(wait, Pattern.compile("(h|st)", Pattern.CASE_INSENSITIVE))) {
+        if (Regex.matches(wait, Pattern.compile("(h|st)", Pattern.CASE_INSENSITIVE))) {
             res *= 60 * 60 * 1000l;
-        } else if (org.appwork.utils.Regex.matches(wait, Pattern.compile("(m)", Pattern.CASE_INSENSITIVE))) {
+        } else if (Regex.matches(wait, Pattern.compile("(m)", Pattern.CASE_INSENSITIVE))) {
             res *= 60 * 1000l;
         } else {
             res *= 1000l;

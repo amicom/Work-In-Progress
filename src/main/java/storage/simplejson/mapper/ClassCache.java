@@ -9,9 +9,9 @@
  */
 package storage.simplejson.mapper;
 
-import org.appwork.storage.simplejson.Ignore;
-import org.appwork.storage.simplejson.Ignores;
-import org.appwork.utils.logging.Log;
+import storage.simplejson.Ignore;
+import storage.simplejson.Ignores;
+import utils.logging.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -124,9 +124,6 @@ public class ClassCache {
      * Jackson maps methodnames to keys like this. setID becomes key "id" ,
      * setMethodName becomes "methodName". To keep compatibility between jackson
      * and simplemapper, we should do it the same way
-     *
-     * @param substring
-     * @return
      */
     public static String createKey(final String key) {
         final StringBuilder sb = new StringBuilder();

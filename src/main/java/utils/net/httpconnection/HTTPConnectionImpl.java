@@ -201,7 +201,7 @@ public class HTTPConnectionImpl implements HTTPConnection {
             }
 
             @Override
-            public Socket createSocket(String arg0, int arg1) throws IOException, UnknownHostException {
+            public Socket createSocket(String arg0, int arg1) throws IOException {
                 return removeGMCCipherSuit(this.removeSSLProtocol(factory.createSocket(arg0, arg1)));
 
             }
@@ -212,7 +212,7 @@ public class HTTPConnectionImpl implements HTTPConnection {
             }
 
             @Override
-            public Socket createSocket(String arg0, int arg1, InetAddress arg2, int arg3) throws IOException, UnknownHostException {
+            public Socket createSocket(String arg0, int arg1, InetAddress arg2, int arg3) throws IOException {
                 return removeGMCCipherSuit(this.removeSSLProtocol(factory.createSocket(arg0, arg1, arg2, arg3)));
             }
 
@@ -1270,10 +1270,7 @@ public class HTTPConnectionImpl implements HTTPConnection {
 
     public boolean isConnected() {
         final Socket connectionSocket = this.getConnectionSocket();
-        if (connectionSocket != null && connectionSocket.isConnected()) {
-            return true;
-        }
-        return false;
+        return connectionSocket != null && connectionSocket.isConnected();
     }
 
     protected boolean isConnectionSocketValid() {
@@ -1303,10 +1300,7 @@ public class HTTPConnectionImpl implements HTTPConnection {
         if (code >= 200 && code < 400) {
             return true;
         }
-        if (this.isResponseCodeAllowed(code)) {
-            return true;
-        }
-        return false;
+        return this.isResponseCodeAllowed(code);
     }
 
     protected boolean isResponseCodeAllowed(final int code) {
@@ -1338,7 +1332,7 @@ public class HTTPConnectionImpl implements HTTPConnection {
         return HTTPConnectionUtils.resolvHostIP(host);
     }
 
-    protected void sendRequest() throws UnsupportedEncodingException, IOException {
+    protected void sendRequest() throws IOException {
         /* now send Request */
         final Socket connectionSocket = this.getConnectionSocket();
         final StringBuilder sb = new StringBuilder();
@@ -1478,7 +1472,7 @@ public class HTTPConnectionImpl implements HTTPConnection {
         this.sslTrustALL = trustALL;
     }
 
-    public static enum KEEPALIVE {
+    public enum KEEPALIVE {
         /**
          * KEEP-ALIVE is disabled
          */

@@ -9,17 +9,18 @@
  */
 package utils.net.httpserver.session;
 
-import org.appwork.remoteapi.*;
-import org.appwork.remoteapi.exceptions.*;
-import org.appwork.storage.JSonStorage;
-import org.appwork.utils.StringUtils;
-import org.appwork.utils.net.httpserver.handler.HttpRequestHandler;
-import org.appwork.utils.net.httpserver.requests.GetRequest;
-import org.appwork.utils.net.httpserver.requests.HttpRequest;
-import org.appwork.utils.net.httpserver.requests.KeyValuePair;
-import org.appwork.utils.net.httpserver.requests.PostRequest;
-import org.appwork.utils.net.httpserver.responses.HttpResponse;
-import org.appwork.utils.reflection.Clazz;
+
+import remoteapi.*;
+import remoteapi.exceptions.*;
+import storage.JSonStorage;
+import utils.StringUtils;
+import utils.net.httpserver.handler.HttpRequestHandler;
+import utils.net.httpserver.requests.GetRequest;
+import utils.net.httpserver.requests.HttpRequest;
+import utils.net.httpserver.requests.KeyValuePair;
+import utils.net.httpserver.requests.PostRequest;
+import utils.net.httpserver.responses.HttpResponse;
+import utils.reflection.Clazz;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -28,7 +29,6 @@ import java.util.List;
 
 /**
  * @author daniel
- *
  */
 public abstract class AbstractSessionRemoteAPI<T extends HttpSession> extends RemoteAPI implements HttpRequestHandler, LoginAPIInterface {
 
@@ -93,7 +93,7 @@ public abstract class AbstractSessionRemoteAPI<T extends HttpSession> extends Re
      * @param sessionID
      * @return
      */
-    protected abstract T getSession(org.appwork.utils.net.httpserver.requests.HttpRequest request, final String sessionID);
+    protected abstract T getSession(utils.net.httpserver.requests.HttpRequest request, final String sessionID);
 
     @Override
     protected Object handleVoidMethods(Object responseData, final Method method) {

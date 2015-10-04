@@ -21,8 +21,8 @@ import utils.net.httpserver.responses.HttpResponse;
  */
 public interface HttpRequestHandler {
 
-    public abstract boolean onGetRequest(final GetRequest request, final HttpResponse response) throws BasicRemoteAPIException;
+    boolean onGetRequest(final GetRequest request, final HttpResponse response) throws BasicRemoteAPIException;
 
-    public abstract boolean onPostRequest(final PostRequest request, final HttpResponse response) throws BasicRemoteAPIException;
+    boolean onPostRequest(final PostRequest request, final HttpResponse response) throws BasicRemoteAPIException;
 
 }

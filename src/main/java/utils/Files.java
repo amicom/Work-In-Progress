@@ -147,10 +147,7 @@ public class Files {
                 if (includeDirectories && pathname.isDirectory()) {
                     return true;
                 }
-                if (includeFiles && pathname.isFile()) {
-                    return true;
-                }
-                return false;
+                return includeFiles && pathname.isFile();
             }
         }, files);
     }
@@ -345,17 +342,17 @@ public class Files {
         }
     }
 
-    public static interface Handler<T extends Exception> {
+    public interface Handler<T extends Exception> {
 
-        public void intro(File f) throws T;
+        void intro(File f) throws T;
 
         /**
          * @param f
          * @throws IOException
          */
-        public void onFile(File f) throws T;
+        void onFile(File f) throws T;
 
-        public void outro(File f) throws T;
+        void outro(File f) throws T;
     }
 
     public static abstract class AbstractHandler<T extends Exception> implements Handler<T> {

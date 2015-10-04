@@ -9,7 +9,8 @@
  */
 package storage.config.handler;
 
-import org.appwork.storage.config.annotations.DefaultFloatValue;
+
+import storage.config.annotations.DefaultFloatValue;
 
 import java.lang.annotation.Annotation;
 

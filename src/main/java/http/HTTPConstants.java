@@ -177,7 +177,7 @@ public class HTTPConstants {
      *
      * @author thomas
      */
-    public static enum ResponseCode {
+    public enum ResponseCode {
         /**
          * This means that the server has received the request headers, and that
          * the client should proceed to send the request body (in the case of a
@@ -279,7 +279,7 @@ public class HTTPConstants {
         private final String description;
         private final byte[] bytes;
 
-        private ResponseCode(final int code, final String desc) {
+        ResponseCode(final int code, final String desc) {
             this.code = code;
             this.description = desc;
             this.bytes = (code + " " + desc).getBytes();

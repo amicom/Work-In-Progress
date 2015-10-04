@@ -9,10 +9,10 @@
  */
 package storage.config.handler;
 
-import org.appwork.storage.config.ValidationException;
-import org.appwork.storage.config.annotations.DefaultIntValue;
-import org.appwork.storage.config.annotations.LookUpKeys;
-import org.appwork.storage.config.annotations.SpinnerValidator;
+import storage.config.ValidationException;
+import storage.config.annotations.DefaultIntValue;
+import storage.config.annotations.LookUpKeys;
+import storage.config.annotations.SpinnerValidator;
 
 import java.lang.annotation.Annotation;
 

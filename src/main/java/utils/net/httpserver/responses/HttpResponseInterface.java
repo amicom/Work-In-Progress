@@ -20,23 +20,23 @@ import java.io.OutputStream;
  *
  */
 public interface HttpResponseInterface {
-    public void closeConnection();
+    void closeConnection();
 
-    public OutputStream getOutputStream(boolean sendResponseHeaders) throws IOException;
+    OutputStream getOutputStream(boolean sendResponseHeaders) throws IOException;
 
     /**
      * @return the responseCode
      */
-    public HTTPConstants.ResponseCode getResponseCode();
+    HTTPConstants.ResponseCode getResponseCode();
 
     /**
      * @param responseCode
      *            the responseCode to set
      */
-    public void setResponseCode(final HTTPConstants.ResponseCode responseCode);
+    void setResponseCode(final HTTPConstants.ResponseCode responseCode);
 
     /**
      * @return the responseHeaders
      */
-    public HeaderCollection getResponseHeaders();
+    HeaderCollection getResponseHeaders();
 }

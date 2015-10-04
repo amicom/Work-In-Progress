@@ -127,7 +127,7 @@ public class SizeFormatter {
 
     }
 
-    public static enum Unit {
+    public enum Unit {
         TB(1024l * 1024l * 1024l * 1024l, 1000l * 1000l * 1000l * 1000l),
         GB(1024l * 1024l * 1024l, 1000l * 1000l * 1000l),
         MB(1024l * 1024l, 1000l * 1000l),
@@ -136,7 +136,7 @@ public class SizeFormatter {
         private final long bytes;
         private final long kibytes;
 
-        private Unit(long kibytes, long bytes) {
+        Unit(long kibytes, long bytes) {
             this.bytes = bytes;
             this.kibytes = kibytes;
 

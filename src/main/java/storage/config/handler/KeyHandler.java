@@ -37,7 +37,6 @@ public abstract class KeyHandler<RawClass> {
     protected final StorageHandler<?> storageHandler;
     private final String key;
     protected Method getMethod = null;
-    ;
     protected Method setMethod = null;
     protected RawClass defaultValue;
     protected String[] backwardsCompatibilityLookupKeys;
@@ -165,10 +164,7 @@ public abstract class KeyHandler<RawClass> {
                 return true;
             }
             final DefaultFactory df = this.getAnnotation(DefaultFactory.class);
-            if (df != null) {
-                return true;
-            }
-            return false;
+            return df != null;
         } catch (final Throwable e) {
             throw new RuntimeException(e);
         }
@@ -188,7 +184,7 @@ public abstract class KeyHandler<RawClass> {
             }
             final Annotation ann = this.getAnnotation(this.getDefaultAnnotation());
             if (ann != null) {
-                return (RawClass) ann.annotationType().getMethod("value", new Class[]{}).invoke(ann, new Object[]{});
+                return (RawClass) ann.annotationType().getMethod("value", new Class[]{}).invoke(ann);
             }
             return this.defaultValue;
         } catch (final Throwable e) {
@@ -620,7 +616,7 @@ public abstract class KeyHandler<RawClass> {
      */
     protected abstract void validateValue(RawClass object) throws Throwable;
 
-    public static enum AbstractTypeDefinition {
+    public enum AbstractTypeDefinition {
         BOOLEAN,
         INT,
         LONG,
@@ -645,7 +641,7 @@ public abstract class KeyHandler<RawClass> {
         CHAR_LIST,
         UNKNOWN,
         HEX_COLOR,
-        HEX_COLOR_LIST;
+        HEX_COLOR_LIST
     }
 
 }

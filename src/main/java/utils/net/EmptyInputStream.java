@@ -38,5 +38,4 @@ public final class EmptyInputStream extends InputStream implements StreamValidEO
         return true;
     }
 
-    ;
 }

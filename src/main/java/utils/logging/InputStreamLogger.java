@@ -39,7 +39,7 @@ public class InputStreamLogger extends Thread {
         }
     }
 
-    public void readInputStreamToString(final InputStream fis, LogSource logger) throws UnsupportedEncodingException, IOException, InterruptedException {
+    public void readInputStreamToString(final InputStream fis, LogSource logger) throws IOException, InterruptedException {
         BufferedReader f = null;
 
         try {

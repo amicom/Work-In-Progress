@@ -495,15 +495,6 @@ public class JSonMapper {
         this.ignoreIllegalArgumentMappings = ignoreIllegalArgumentMappings;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T jsonToObject(final JSonNode json, final TypeRef<T> type) throws MapperException {
-
-        return (T) this.jsonToObject(json, type.getType());
-    }
-
-    public void setIgnoreIllegalEnumMappings(final boolean ignoreIllegalEnumMappings) {
-        this.ignoreIllegalEnumMappings = ignoreIllegalEnumMappings;
-    }
 
     /**
      * @param class1

@@ -9,10 +9,10 @@
  */
 package utils.net.socketconnection;
 
-import org.appwork.utils.StringUtils;
-import org.appwork.utils.net.httpconnection.HTTPConnectionImpl;
-import org.appwork.utils.net.httpconnection.HTTPProxy;
-import org.appwork.utils.net.httpconnection.ProxyConnectException;
+import utils.StringUtils;
+import utils.net.httpconnection.HTTPConnectionImpl;
+import utils.net.httpconnection.HTTPProxy;
+import utils.net.httpconnection.ProxyConnectException;
 
 import java.io.IOException;
 import java.net.*;

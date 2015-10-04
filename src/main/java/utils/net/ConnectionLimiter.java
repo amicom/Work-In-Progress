@@ -9,9 +9,10 @@
  */
 package utils.net;
 
-import org.appwork.utils.event.BasicEvent;
-import org.appwork.utils.event.BasicEventSender;
-import org.appwork.utils.logging.Log;
+
+import events.BasicEvent;
+import events.BasicEventSender;
+import utils.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;

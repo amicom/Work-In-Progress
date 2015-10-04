@@ -51,7 +51,7 @@ public class ThrottledInputStream extends InputStream implements ThrottledConnec
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
+    public static void main(final String[] args) throws IOException, InterruptedException {
         final MeteredThrottledInputStream is = new MeteredThrottledInputStream(new NullInputStream(), new AverageSpeedMeter(5));
         is.setLimit(19 * 1022);
         int read = 0;

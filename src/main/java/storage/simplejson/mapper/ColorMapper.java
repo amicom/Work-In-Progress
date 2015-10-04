@@ -9,8 +9,8 @@
  */
 package storage.simplejson.mapper;
 
-import org.appwork.storage.simplejson.JSonNode;
-import org.appwork.storage.simplejson.JSonValue;
+import storage.simplejson.JSonNode;
+import storage.simplejson.JSonValue;
 
 import java.awt.*;
 
@@ -38,7 +38,7 @@ public class ColorMapper extends TypeMapper<Color> {
             hex = Integer.toHexString(c.getRGB() & 0x00ffffff);
             length = 6;
         } else {
-            hex = Integer.toHexString(c.getRGB() & 0xffffffff);
+            hex = Integer.toHexString(c.getRGB());
             length = 8;
         }
         for (int i = 0; i < length - hex.length(); i++) {

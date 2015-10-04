@@ -15,5 +15,5 @@ package storage.config;
  */
 public interface MinTimeWeakReferenceCleanup {
 
-    public void onMinTimeWeakReferenceCleanup(MinTimeWeakReference<?> minTimeWeakReference);
+    void onMinTimeWeakReferenceCleanup(MinTimeWeakReference<?> minTimeWeakReference);
 }

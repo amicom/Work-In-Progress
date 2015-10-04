@@ -163,7 +163,7 @@ public abstract class ListHandler<T> extends KeyHandler<T> {
                     return this.getDefaultValue();
                 } else if ((ann = this.getAnnotation(this.getDefaultAnnotation())) != null) {
                     try {
-                        this.setDefaultValue((T) ann.annotationType().getMethod("value", new Class[]{}).invoke(ann, new Object[]{}));
+                        this.setDefaultValue((T) ann.annotationType().getMethod("value", new Class[]{}).invoke(ann));
                     } catch (final Throwable e) {
                         e.printStackTrace();
                     }

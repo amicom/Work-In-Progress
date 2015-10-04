@@ -9,7 +9,8 @@
  */
 package utils.crypto;
 
-import org.appwork.utils.logging.Log;
+
+import utils.logging.Log;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;

@@ -21,7 +21,7 @@ package utils.txtresource;
  */
 public interface TranslateInterface {
 
-    public TranslationHandler _getHandler();
+    TranslationHandler _getHandler();
 
     /**
      * @return

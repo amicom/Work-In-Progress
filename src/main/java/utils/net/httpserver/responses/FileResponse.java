@@ -9,13 +9,11 @@
  */
 package utils.net.httpserver.responses;
 
-import org.appwork.net.protocol.http.HTTPConstants;
-import org.appwork.net.protocol.http.HTTPConstants.ResponseCode;
-import org.appwork.utils.Files;
-import org.appwork.utils.ReusableByteArrayOutputStream;
-import org.appwork.utils.net.ChunkedOutputStream;
-import org.appwork.utils.net.HTTPHeader;
-import org.appwork.utils.net.httpserver.requests.HttpRequestInterface;
+import utils.Files;
+import utils.ReusableByteArrayOutputStream;
+import utils.net.ChunkedOutputStream;
+import utils.net.HTTPHeader;
+import utils.net.httpserver.requests.HttpRequestInterface;
 
 import java.io.*;
 import java.net.URL;
@@ -24,6 +22,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.zip.GZIPOutputStream;
+
+import static http.HTTPConstants.*;
 
 /**
  * @author daniel
@@ -75,7 +75,7 @@ public class FileResponse {
 
     /* do we allow gzip-encoded? */
     protected boolean allowGZIP() {
-        final HTTPHeader acceptEncoding = this.request.getRequestHeaders().get(HTTPConstants.HEADER_REQUEST_ACCEPT_ENCODING);
+        final HTTPHeader acceptEncoding = this.request.getRequestHeaders().get(HEADER_REQUEST_ACCEPT_ENCODING);
         if (acceptEncoding != null) {
             final String value = acceptEncoding.getValue();
             if (value != null && value.contains("gzip")) {
@@ -152,30 +152,30 @@ public class FileResponse {
             this.response.setResponseCode(ResponseCode.SUCCESS_OK);
             if (this.allowRanges()) {
                 /* do we allow ranges? */
-                this.response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_ENCODING, "bytes"));
+                this.response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_CONTENT_ENCODING, "bytes"));
             }
             if (this.allowGZIP()) {
                 /* do we use gzip for content encoding? */
                 if (!this.useContentDisposition()) {
                     /* only allow gzip when not offering to save the file */
                     gzip = true;
-                    this.response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_ENCODING, "gzip"));
+                    this.response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_CONTENT_ENCODING, "gzip"));
                 }
             }
             final long length = this.getContentLength(knownLength);
             if (length >= 0 && !gzip) {
                 /* we know content length, send it */
-                this.response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_LENGTH, length + ""));
+                this.response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_CONTENT_LENGTH, length + ""));
             } else {
                 /*
                  * content length is unknown or we use gzipped coding, let us
                  * use chunked encoding
                  */
                 chunked = true;
-                this.response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_TRANSFER_ENCODING, "chunked"));
+                this.response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_TRANSFER_ENCODING, "chunked"));
             }
             /* set content-type */
-            this.response.getResponseHeaders().add(new HTTPHeader(HTTPConstants.HEADER_RESPONSE_CONTENT_TYPE, this.getMimeType()));
+            this.response.getResponseHeaders().add(new HTTPHeader(HEADER_RESPONSE_CONTENT_TYPE, this.getMimeType()));
             if (this.useContentDisposition()) {
                 /* offer file to download */
                 this.response.getResponseHeaders().add(new HTTPHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode(this.getFileName(), "UTF-8")));
@@ -229,10 +229,7 @@ public class FileResponse {
 
     /* do we want the client to download this file or not? */
     protected boolean useContentDisposition() {
-        if (this.inputURL != null) {
-            return false;
-        }
-        return true;
+        return this.inputURL == null;
     }
 
 }

@@ -15,34 +15,34 @@ package utils.net.throttledconnection;
  */
 public interface ThrottledConnection {
 
-    public ThrottledConnectionHandler getHandler();
+    ThrottledConnectionHandler getHandler();
 
     /**
      * set a new ThrottledConnectionHandler
      *
      * @param manager
      */
-    public void setHandler(ThrottledConnectionHandler manager);
+    void setHandler(ThrottledConnectionHandler manager);
 
     /**
      * get current limit
      *
      * @return
      */
-    public int getLimit();
+    int getLimit();
 
     /**
      * sets limit 0: no limit >0: use limit
      *
      * @param kpsLimit
      */
-    public void setLimit(int kpsLimit);
+    void setLimit(int kpsLimit);
 
     /**
      * return how many bytes this ThrottledConnection has transfered
      *
      * @return
      */
-    public long transfered();
+    long transfered();
 
 }

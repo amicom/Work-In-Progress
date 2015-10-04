@@ -34,8 +34,6 @@ public abstract class ShutdownEvent {
         return maxDuration;
     }
 
-    ;
-
     /**
      * Waits at most <code>millis</code> milliseconds for this event to die. A timeout of <code>0</code> means to wait forever
      */

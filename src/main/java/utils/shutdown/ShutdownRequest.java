@@ -17,32 +17,32 @@ import java.util.List;
  */
 public interface ShutdownRequest {
 
-    public boolean askForVeto(ShutdownVetoListener listener);
+    boolean askForVeto(ShutdownVetoListener listener);
 
-    public void addVeto(ShutdownVetoException e);
-
-    /**
-     * @return
-     */
-    public boolean isSilent();
+    void addVeto(ShutdownVetoException e);
 
     /**
      * @return
      */
-    public List<ShutdownVetoException> getVetos();
+    boolean isSilent();
 
     /**
      * @return
      */
-    public boolean hasVetos();
+    List<ShutdownVetoException> getVetos();
+
+    /**
+     * @return
+     */
+    boolean hasVetos();
 
     /**
      *
      */
-    public void onShutdownVeto();
+    void onShutdownVeto();
 
     /**
      *
      */
-    public void onShutdown();
+    void onShutdown();
 }

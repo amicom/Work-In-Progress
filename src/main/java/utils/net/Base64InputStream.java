@@ -149,7 +149,7 @@ public class Base64InputStream extends FilterInputStream {
         if (this.decodedAvailable > 0) {
             this.decodedAvailable--;
             /*need to mask the byte*/
-            next = (int) ((byte) this.base64Decoded[0] & 0xff);
+            next = this.base64Decoded[0] & 0xff;
             this.base64Decoded[0] = this.base64Decoded[1];
             this.base64Decoded[1] = this.base64Decoded[2];
         }

@@ -21,7 +21,7 @@ public interface ShutdownVetoListener {
      * happen immediatelly after this call
      * @param request TODO
      */
-    public void onShutdown(ShutdownRequest request);
+    void onShutdown(ShutdownRequest request);
 
     /**
      * step 2b: If one or more listeners in step 1 answered with true(veto) all
@@ -29,7 +29,7 @@ public interface ShutdownVetoListener {
      *
      * @param vetos
      */
-    public void onShutdownVeto(ShutdownRequest request);
+    void onShutdownVeto(ShutdownRequest request);
 
     /**
      * step 1b:<br>
@@ -39,13 +39,13 @@ public interface ShutdownVetoListener {
      * @return
      * @throws ShutdownVetoException
      */
-    public void onShutdownVetoRequest(ShutdownRequest request) throws ShutdownVetoException;
+    void onShutdownVetoRequest(ShutdownRequest request) throws ShutdownVetoException;
 
 
     /**
      * the higher the priority, the earlier the veto listener will be called
      * @return
      */
-    public long getShutdownVetoPriority();
+    long getShutdownVetoPriority();
 
 }

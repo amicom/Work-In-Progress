@@ -9,7 +9,8 @@
  */
 package utils.net.httpserver;
 
-import org.appwork.utils.net.httpserver.handler.HttpRequestHandler;
+
+import utils.net.httpserver.handler.HttpRequestHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;

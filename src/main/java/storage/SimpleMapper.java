@@ -9,11 +9,11 @@
  */
 package storage;
 
-import org.appwork.storage.simplejson.JSonFactory;
-import org.appwork.storage.simplejson.JSonNode;
-import org.appwork.storage.simplejson.ParserException;
-import org.appwork.storage.simplejson.mapper.JSonMapper;
-import org.appwork.storage.simplejson.mapper.MapperException;
+import storage.simplejson.JSonFactory;
+import storage.simplejson.JSonNode;
+import storage.simplejson.ParserException;
+import storage.simplejson.mapper.JSonMapper;
+import storage.simplejson.mapper.MapperException;
 
 import java.util.ArrayList;
 import java.util.List;

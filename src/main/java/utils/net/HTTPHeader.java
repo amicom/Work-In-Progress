@@ -36,10 +36,7 @@ public class HTTPHeader {
     }
 
     public boolean contains(final String string) {
-        if (this.value != null && this.value.contains(string)) {
-            return true;
-        }
-        return false;
+        return this.value != null && this.value.contains(string);
     }
 
     public String format() {

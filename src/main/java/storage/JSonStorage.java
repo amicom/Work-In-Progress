@@ -119,7 +119,7 @@ public class JSonStorage {
             if (Storable.class.isAssignableFrom(type) || allowNonStorableObjects) {
                 try {
 
-                    type.getDeclaredConstructor(new Class[]{});
+                    type.getDeclaredConstructor();
                     for (final Method m : type.getDeclaredMethods()) {
                         if (m.getName().startsWith("get")) {
 

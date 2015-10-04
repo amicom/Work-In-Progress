@@ -53,7 +53,7 @@ public class StateEvent extends SimpleEvent<StateMachine, State, StateEvent.Type
         return this.getCaller();
     }
 
-    public static enum Types {
+    public enum Types {
         CHANGED,
         UPDATED
     }

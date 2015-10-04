@@ -9,7 +9,8 @@
  */
 package utils.net.throttledconnection;
 
-import org.appwork.utils.speedmeter.SpeedMeterInterface;
+
+import utils.speedmeter.SpeedMeterInterface;
 
 import java.io.OutputStream;
 

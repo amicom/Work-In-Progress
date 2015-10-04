@@ -9,7 +9,8 @@
  */
 package storage.config.handler;
 
-import org.appwork.storage.config.annotations.DefaultBooleanValue;
+
+import storage.config.annotations.DefaultBooleanValue;
 
 import java.lang.annotation.Annotation;
 
@@ -52,10 +53,7 @@ public class BooleanKeyHandler extends KeyHandler<Boolean> {
 
     public boolean isEnabled() {
         final Boolean value = this.getValue();
-        if (value == null || value == false) {
-            return false;
-        }
-        return true;
+        return !(value == null || value == false);
     }
 
     /*

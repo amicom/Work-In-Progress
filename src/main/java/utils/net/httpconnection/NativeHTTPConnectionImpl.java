@@ -557,10 +557,7 @@ public class NativeHTTPConnectionImpl implements HTTPConnection {
 
     @Override
     public boolean isConnected() {
-        if (this.con != null && this.connected) {
-            return true;
-        }
-        return false;
+        return this.con != null && this.connected;
     }
 
     @Override
@@ -579,10 +576,7 @@ public class NativeHTTPConnectionImpl implements HTTPConnection {
         if (code >= 200 && code < 400) {
             return true;
         }
-        if (this.isResponseCodeAllowed(code)) {
-            return true;
-        }
-        return false;
+        return this.isResponseCodeAllowed(code);
     }
 
     protected boolean isResponseCodeAllowed(final int code) {
@@ -642,8 +636,6 @@ public class NativeHTTPConnectionImpl implements HTTPConnection {
         this.contentDecoded = b;
     }
 
-    ;
-
     @Override
     public void setReadTimeout(final int readTimeout) {
         try {
@@ -686,10 +678,6 @@ public class NativeHTTPConnectionImpl implements HTTPConnection {
         this.sslTrustALL = trustALL;
     }
 
-    @Override
-    public void setSSLTrustALL(boolean trustALL) {
-        this.sslTrustALL = trustALL;
-    }
 
     @Override
     public boolean isSSLTrustALL() {

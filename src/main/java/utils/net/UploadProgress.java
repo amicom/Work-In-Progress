@@ -15,15 +15,15 @@ package utils.net;
  */
 public interface UploadProgress {
 
-    public long getTotal();
+    long getTotal();
 
-    public void setTotal(long total);
+    void setTotal(long total);
 
-    public long getUploaded();
+    long getUploaded();
 
-    public void setUploaded(long loaded);
+    void setUploaded(long loaded);
 
-    public void increaseUploaded(long increase);
+    void increaseUploaded(long increase);
 
-    public void onBytesUploaded(byte[] b, int len);
+    void onBytesUploaded(byte[] b, int len);
 }

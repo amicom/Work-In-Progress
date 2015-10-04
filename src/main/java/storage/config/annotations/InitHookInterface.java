@@ -16,7 +16,7 @@ import java.io.File;
  *
  */
 public interface InitHookInterface {
-    public void doHook(final File file, final Class<?> configInterface);
+    void doHook(final File file, final Class<?> configInterface);
 
-    public void doHook(final String classPath, final Class<?> configInterface);
+    void doHook(final String classPath, final Class<?> configInterface);
 }

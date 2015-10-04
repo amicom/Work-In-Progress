@@ -208,7 +208,7 @@ public class RemoteAPIRequest implements HttpRequestInterface {
         return true;
     }
 
-    public static enum REQUESTTYPE {
+    public enum REQUESTTYPE {
         HEAD,
         POST,
         OPTIONS,

@@ -9,18 +9,19 @@
  */
 package utils.net.socketconnection;
 
-import org.appwork.utils.StringUtils;
-import org.appwork.utils.net.httpconnection.HTTPProxy;
-import org.appwork.utils.net.httpconnection.ProxyAuthException;
-import org.appwork.utils.net.httpconnection.ProxyConnectException;
-import org.appwork.utils.net.httpconnection.SocksHTTPconnection.AUTH;
-import org.appwork.utils.net.httpconnection.SocksHTTPconnection.DESTTYPE;
+import utils.StringUtils;
+import utils.net.httpconnection.HTTPProxy;
+import utils.net.httpconnection.ProxyAuthException;
+import utils.net.httpconnection.ProxyConnectException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
+
+import static utils.net.httpconnection.SocksHTTPconnection.AUTH;
+import static utils.net.httpconnection.SocksHTTPconnection.DESTTYPE;
 
 /**
  * @author daniel

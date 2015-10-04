@@ -9,7 +9,8 @@
  */
 package storage.config.handler;
 
-import org.appwork.storage.config.annotations.DefaultDoubleValue;
+
+import storage.config.annotations.DefaultDoubleValue;
 
 import java.lang.annotation.Annotation;
 

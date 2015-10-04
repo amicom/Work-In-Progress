@@ -32,9 +32,9 @@ public interface HTTPConnection {
      *
      * @return
      */
-    public String getCharset();
+    String getCharset();
 
-    public void setCharset(String charset);
+    void setCharset(String charset);
 
     /**
      * always returns the complete length of the content. will also return the
@@ -75,7 +75,7 @@ public interface HTTPConnection {
 
     String getRequestProperty(String string);
 
-    public long getRequestTime();
+    long getRequestTime();
 
     int getResponseCode();
 
@@ -103,7 +103,7 @@ public interface HTTPConnection {
 
     void setSSLTrustALL(boolean trustALL);
 
-    public static enum RequestMethod {
+    enum RequestMethod {
         PUT,
         DELETE,
         OPTIONS,

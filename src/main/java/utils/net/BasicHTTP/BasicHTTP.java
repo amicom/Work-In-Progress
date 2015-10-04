@@ -1,15 +1,15 @@
 package utils.net.BasicHTTP;
 
-import org.appwork.net.protocol.http.HTTPConstants;
-import org.appwork.txtresource.TranslationFactory;
-import org.appwork.utils.Application;
-import org.appwork.utils.logging2.LogInterface;
-import org.appwork.utils.net.DownloadProgress;
-import org.appwork.utils.net.UploadProgress;
-import org.appwork.utils.net.httpconnection.HTTPConnection;
-import org.appwork.utils.net.httpconnection.HTTPConnection.RequestMethod;
-import org.appwork.utils.net.httpconnection.HTTPConnectionFactory;
-import org.appwork.utils.net.httpconnection.HTTPProxy;
+
+import http.HTTPConstants;
+import utils.Application;
+import utils.logging.LogInterface;
+import utils.net.DownloadProgress;
+import utils.net.UploadProgress;
+import utils.net.httpconnection.HTTPConnection;
+import utils.net.httpconnection.HTTPConnectionFactory;
+import utils.net.httpconnection.HTTPProxy;
+import utils.txtresource.TranslationFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -35,7 +35,7 @@ public class BasicHTTP {
         this.requestHeader = new HashMap<String, String>();
     }
 
-    public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
+    public static void main(final String[] args) throws IOException, InterruptedException {
 
         final BasicHTTP client = new BasicHTTP();
         System.out.println(client.getPage(new URL("http://ipcheck0.jdownloader.org")));
@@ -465,7 +465,7 @@ public class BasicHTTP {
                 this.setAllowedResponseCodes(this.connection);
                 this.connection.setConnectTimeout(this.getConnectTimeout());
                 this.connection.setReadTimeout(this.getReadTimeout());
-                this.connection.setRequestMethod(RequestMethod.POST);
+                this.connection.setRequestMethod(HTTPConnection.RequestMethod.POST);
                 this.connection.setRequestProperty("Accept-Language", TranslationFactory.getDesiredLanguage());
                 this.connection.setRequestProperty("User-Agent", "AppWork " + Application.getApplication());
                 this.connection.setRequestProperty("Connection", "Close");
@@ -569,7 +569,7 @@ public class BasicHTTP {
                 this.setAllowedResponseCodes(this.connection);
                 this.connection.setConnectTimeout(this.getConnectTimeout());
                 this.connection.setReadTimeout(this.getReadTimeout());
-                this.connection.setRequestMethod(RequestMethod.POST);
+                this.connection.setRequestMethod(HTTPConnection.RequestMethod.POST);
                 this.connection.setRequestProperty("Accept-Language", TranslationFactory.getDesiredLanguage());
                 this.connection.setRequestProperty("User-Agent", "AppWork " + Application.getApplication());
                 if (byteData == null) {

@@ -1,9 +1,9 @@
 package utils.net;
 
-import org.appwork.utils.Application;
-import org.appwork.utils.IO;
-import org.appwork.utils.locale.Loc;
-import org.appwork.utils.logging.Log;
+import utils.Application;
+import utils.IO;
+import utils.locale.Loc;
+import utils.logging.Log;
 
 import java.io.*;
 import java.net.HttpURLConnection;

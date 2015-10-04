@@ -23,7 +23,7 @@ public class ConfigEvent extends SimpleEvent<KeyHandler<?>, Object, ConfigEvent.
     }
 
 
-    public static enum Types {
+    public enum Types {
         VALUE_UPDATED,
         /**
          * Parameter[0] = Throwable from value validator<br>

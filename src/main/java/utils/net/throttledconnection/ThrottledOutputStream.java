@@ -9,8 +9,8 @@
  */
 package utils.net.throttledconnection;
 
-import org.appwork.utils.net.NullOutputStream;
-import org.appwork.utils.speedmeter.AverageSpeedMeter;
+import utils.net.NullOutputStream;
+import utils.speedmeter.AverageSpeedMeter;
 
 import java.io.IOException;
 import java.io.OutputStream;

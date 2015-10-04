@@ -19,5 +19,5 @@ public interface CountingConnection {
      *
      * @return transfered bytes
      */
-    public long transferedBytes();
+    long transferedBytes();
 }

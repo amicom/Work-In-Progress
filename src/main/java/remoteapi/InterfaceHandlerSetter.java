@@ -14,5 +14,5 @@ package remoteapi;
  *
  */
 public interface InterfaceHandlerSetter {
-    public void setInterfaceHandler(InterfaceHandler<?> handler);
+    void setInterfaceHandler(InterfaceHandler<?> handler);
 }

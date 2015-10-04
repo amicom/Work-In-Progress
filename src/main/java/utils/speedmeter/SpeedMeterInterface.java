@@ -18,14 +18,14 @@ public interface SpeedMeterInterface {
     /**
      * resets the speed meter
      */
-    public void resetSpeedMeter();
+    void resetSpeedMeter();
 
     /**
      * returns speed in byte/s
      *
      * @return
      */
-    public long getSpeedMeter();
+    long getSpeedMeter();
 
     /**
      * put bytes/time into this speed meter
@@ -33,5 +33,5 @@ public interface SpeedMeterInterface {
      * @param bytes
      * @param time
      */
-    public void putSpeedMeter(long bytes, long time);
+    void putSpeedMeter(long bytes, long time);
 }

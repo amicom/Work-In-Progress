@@ -14,13 +14,13 @@ package storage;
  *
  */
 public interface JSONMapper {
-    public <T> void addSerializer(Class<T> clazz, final JsonSerializer<T> jsonSerializer);
+    <T> void addSerializer(Class<T> clazz, final JsonSerializer<T> jsonSerializer);
 
-    public String objectToString(Object o) throws JSonMapperException;
+    String objectToString(Object o) throws JSonMapperException;
 
-    public <T> T stringToObject(String jsonString, Class<T> clazz) throws JSonMapperException;
+    <T> T stringToObject(String jsonString, Class<T> clazz) throws JSonMapperException;
 
-    public <T> T convert(Object jsonString, TypeRef<T> type) throws JSonMapperException;
+    <T> T convert(Object jsonString, TypeRef<T> type) throws JSonMapperException;
 
-    public <T> T stringToObject(String jsonString, TypeRef<T> type) throws JSonMapperException;
+    <T> T stringToObject(String jsonString, TypeRef<T> type) throws JSonMapperException;
 }

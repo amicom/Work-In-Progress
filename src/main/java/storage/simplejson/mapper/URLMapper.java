@@ -9,8 +9,8 @@
  */
 package storage.simplejson.mapper;
 
-import org.appwork.storage.simplejson.JSonNode;
-import org.appwork.storage.simplejson.JSonValue;
+import storage.simplejson.JSonNode;
+import storage.simplejson.JSonValue;
 
 import java.net.MalformedURLException;
 import java.net.URL;

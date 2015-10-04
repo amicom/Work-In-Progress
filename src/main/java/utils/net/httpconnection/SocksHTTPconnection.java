@@ -9,6 +9,8 @@
  */
 package utils.net.httpconnection;
 
+import utils.Regex;
+
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -79,7 +81,7 @@ public abstract class SocksHTTPconnection extends HTTPConnectionImpl {
                 this.setReadTimeout(this.readTimeout);
                 this.httpResponseCode = -1;
                 this.requestTime = System.currentTimeMillis() - startTime;
-                this.httpPath = new org.appwork.utils.Regex(this.httpURL.toString(), "https?://.*?(/.+)").getMatch(0);
+                this.httpPath = new Regex(this.httpURL.toString(), "https?://.*?(/.+)").getMatch(0);
                 if (this.httpPath == null) {
                     this.httpPath = "/";
                 }
@@ -155,12 +157,12 @@ public abstract class SocksHTTPconnection extends HTTPConnectionImpl {
         return super.getRequestInfo();
     }
 
-    public static enum AUTH {
+    public enum AUTH {
         PLAIN,
         NONE
     }
 
-    public static enum DESTTYPE {
+    public enum DESTTYPE {
         IPV4,
         DOMAIN
     }

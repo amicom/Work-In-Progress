@@ -15,6 +15,6 @@ package utils.net;
  */
 public interface StreamValidEOF {
 
-    public boolean isValidEOF();
+    boolean isValidEOF();
 
 }

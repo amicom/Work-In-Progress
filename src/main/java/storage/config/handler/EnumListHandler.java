@@ -9,7 +9,8 @@
  */
 package storage.config.handler;
 
-import org.appwork.storage.config.annotations.DefaultEnumArrayValue;
+
+import storage.config.annotations.DefaultEnumArrayValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

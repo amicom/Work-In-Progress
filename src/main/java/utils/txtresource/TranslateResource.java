@@ -124,7 +124,7 @@ public class TranslateResource {
      * @throws IOException
      * @throws UnsupportedEncodingException
      */
-    public String getEntry(final Method method) throws UnsupportedEncodingException, IOException {
+    public String getEntry(final Method method) throws IOException {
 
         // if we have no translation files, but only defaults, read them
         // directly
@@ -187,7 +187,7 @@ public class TranslateResource {
      * @throws IOException
      * @throws UnsupportedEncodingException
      */
-    private String read(final URL url) throws UnsupportedEncodingException, IOException {
+    private String read(final URL url) throws IOException {
 
         BufferedReader f = null;
         InputStreamReader isr = null;

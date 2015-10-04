@@ -21,17 +21,17 @@ import java.util.List;
  */
 public interface HttpRequestInterface {
 
-    public String getRequestedPath();
+    String getRequestedPath();
 
-    public String getParameterbyKey(String key) throws IOException;
+    String getParameterbyKey(String key) throws IOException;
 
-    public String getRequestedURL();
+    String getRequestedURL();
 
     /**
      * @return the requestedURLParameters
      */
-    public List<KeyValuePair> getRequestedURLParameters();
+    List<KeyValuePair> getRequestedURLParameters();
 
-    public HeaderCollection getRequestHeaders();
+    HeaderCollection getRequestHeaders();
 
 }

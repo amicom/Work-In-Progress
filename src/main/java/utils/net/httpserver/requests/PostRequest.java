@@ -277,7 +277,7 @@ public class PostRequest extends HttpRequest {
         return null;
     }
 
-    public static enum CONTENT_TYPE {
+    public enum CONTENT_TYPE {
         X_WWW_FORM_URLENCODED,
         JSON,
         UNKNOWN

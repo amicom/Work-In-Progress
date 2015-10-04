@@ -226,7 +226,7 @@ public class IO {
         return IO.readURLToString(file.toURI().toURL());
     }
 
-    public static String readInputStreamToString(final InputStream fis) throws UnsupportedEncodingException, IOException {
+    public static String readInputStreamToString(final InputStream fis) throws IOException {
         BufferedReader f = null;
         try {
             f = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
@@ -441,7 +441,7 @@ public class IO {
         }
     }
 
-    public static void secureWrite(final File file, final String utf8String, final SYNC sync) throws UnsupportedEncodingException, IOException {
+    public static void secureWrite(final File file, final String utf8String, final SYNC sync) throws IOException {
         IO.secureWrite(file, utf8String.getBytes("UTF-8"), sync);
 
     }
@@ -598,7 +598,7 @@ public class IO {
         }
     }
 
-    public static enum SYNC {
+    public enum SYNC {
         /**
          * do not sync filesystem at all
          */

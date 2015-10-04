@@ -9,11 +9,11 @@
  */
 package storage.config.handler;
 
-import org.appwork.storage.JSonStorage;
-import org.appwork.storage.TypeRef;
-import org.appwork.storage.config.annotations.DefaultEnumValue;
-import org.appwork.storage.config.annotations.DefaultFactory;
-import org.appwork.storage.config.annotations.DefaultJsonObject;
+import storage.JSonStorage;
+import storage.TypeRef;
+import storage.config.annotations.DefaultEnumValue;
+import storage.config.annotations.DefaultFactory;
+import storage.config.annotations.DefaultJsonObject;
 
 import java.lang.annotation.Annotation;
 

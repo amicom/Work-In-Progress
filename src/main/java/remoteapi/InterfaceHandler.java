@@ -38,7 +38,7 @@ public class InterfaceHandler<T> {
 
     static {
         try {
-            InterfaceHandler.HELP = InterfaceHandler.class.getMethod("help", new Class[]{RemoteAPIRequest.class, RemoteAPIResponse.class});
+            InterfaceHandler.HELP = InterfaceHandler.class.getMethod("help", RemoteAPIRequest.class, RemoteAPIResponse.class);
         } catch (final SecurityException e) {
             Log.exception(e);
         } catch (final NoSuchMethodException e) {
@@ -142,7 +142,7 @@ public class InterfaceHandler<T> {
         return this.signatureHandler;
     }
 
-    public void help(final RemoteAPIRequest request, final RemoteAPIResponse response) throws InstantiationException, IllegalAccessException, UnsupportedEncodingException, IOException {
+    public void help(final RemoteAPIRequest request, final RemoteAPIResponse response) throws InstantiationException, IllegalAccessException, IOException {
         byte[] bytes = null;
         if ("true".equals(request.getParameterbyKey("json"))) {
             bytes = this.helpBytesJson.get();
@@ -163,7 +163,7 @@ public class InterfaceHandler<T> {
         response.sendBytes(request, bytes);
     }
 
-    private String helpJSON(final RemoteAPIRequest request, final RemoteAPIResponse response) throws UnsupportedEncodingException, IOException {
+    private String helpJSON(final RemoteAPIRequest request, final RemoteAPIResponse response) throws IOException {
         final List<RemoteAPIMethodDefinition> methodDefinitions = new ArrayList<RemoteAPIMethodDefinition>();
         for (final Method m : this.methods.values()) {
             final RemoteAPIMethodDefinition mDef = new RemoteAPIMethodDefinition();

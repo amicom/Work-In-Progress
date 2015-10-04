@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public interface Mime {
 
-    public Icon getFileIcon(String extension, int width, int height) throws IOException;
+    Icon getFileIcon(String extension, int width, int height) throws IOException;
 
-    public String getMimeDescription(String mimetype);
+    String getMimeDescription(String mimetype);
 }

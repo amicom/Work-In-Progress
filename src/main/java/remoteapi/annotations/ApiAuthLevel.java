@@ -22,5 +22,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface ApiAuthLevel {
 
-    public int value();
+    int value();
 }

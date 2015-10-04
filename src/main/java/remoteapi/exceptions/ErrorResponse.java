@@ -1,6 +1,7 @@
 package remoteapi.exceptions;
 
-import org.appwork.storage.Storable;
+
+import storage.Storable;
 
 public class ErrorResponse implements Storable {
 

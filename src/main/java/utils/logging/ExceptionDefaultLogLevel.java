@@ -17,5 +17,5 @@ import java.util.logging.Level;
  */
 public interface ExceptionDefaultLogLevel {
 
-    public Level getDefaultLogLevel();
+    Level getDefaultLogLevel();
 }

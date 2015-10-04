@@ -22,7 +22,7 @@ public class LogSink extends Logger {
     protected Logger parent = null;
 
     protected LogSink(final String name) {
-        this(name, (String) null);
+        this(name, null);
         this.setLevel(Level.ALL);
     }
 

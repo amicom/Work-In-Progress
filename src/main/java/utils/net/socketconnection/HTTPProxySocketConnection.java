@@ -9,12 +9,13 @@
  */
 package utils.net.socketconnection;
 
-import org.appwork.utils.Regex;
-import org.appwork.utils.encoding.Base64;
-import org.appwork.utils.net.httpconnection.HTTPConnectionUtils;
-import org.appwork.utils.net.httpconnection.HTTPProxy;
-import org.appwork.utils.net.httpconnection.ProxyAuthException;
-import org.appwork.utils.net.httpconnection.ProxyConnectException;
+
+import utils.Regex;
+import utils.encoding.Base64;
+import utils.net.httpconnection.HTTPConnectionUtils;
+import utils.net.httpconnection.HTTPProxy;
+import utils.net.httpconnection.ProxyAuthException;
+import utils.net.httpconnection.ProxyConnectException;
 
 import java.io.IOException;
 import java.io.InputStream;

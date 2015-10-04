@@ -9,7 +9,8 @@
  */
 package utils.encoding;
 
-import org.appwork.utils.logging.Log;
+
+import utils.logging.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

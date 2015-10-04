@@ -9,7 +9,8 @@
  */
 package remoteapi;
 
-import org.appwork.storage.Storable;
+
+import storage.Storable;
 
 import java.util.List;
 

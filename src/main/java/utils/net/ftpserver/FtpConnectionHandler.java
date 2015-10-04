@@ -78,7 +78,7 @@ public abstract class FtpConnectionHandler<E extends FtpFile> {
      * @throws IOException
      * @throws UnsupportedEncodingException
      */
-    public abstract java.util.List<E> getFileList(FtpConnectionState connectionState, String string) throws UnsupportedEncodingException, IOException, FtpException;
+    public abstract java.util.List<E> getFileList(FtpConnectionState connectionState, String string) throws IOException, FtpException;
 
     /**
      * @param connectionState

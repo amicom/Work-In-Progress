@@ -23,7 +23,6 @@ public class JSonRequest implements Storable {
             return JSonRequest.class;
         }
 
-        ;
     };
     private String url;
     private long rid;

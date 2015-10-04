@@ -72,7 +72,7 @@ public class LoggerFactory extends LogSourceProvider {
                     // Adding the global Logger. Doing so in the Logger.<clinit>
                     // would deadlock with the LogManager.<clinit>.
 
-                    final Method setLogManager = Logger.class.getDeclaredMethod("setLogManager", new Class[]{java.util.logging.LogManager.class});
+                    final Method setLogManager = Logger.class.getDeclaredMethod("setLogManager", java.util.logging.LogManager.class);
                     setLogManager.setAccessible(true);
                     setLogManager.invoke(Logger.global, manager);
 

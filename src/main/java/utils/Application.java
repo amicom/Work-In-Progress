@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2009 - 2010 AppWork UG(haftungsbeschränkt) <e-mail@appwork.org>
- *
+ * <p/>
  * This file is part of org.appwork.utils
- *
+ * <p/>
  * This software is licensed under the Artistic License 2.0,
  * see the LICENSE file or http://www.opensource.org/licenses/artistic-license-2.0.php
  * for details
@@ -11,21 +11,23 @@ package utils;
 
 import utils.exceptions.WTFException;
 import utils.logging.Log;
+import utils.logging.LogInterface;
 import utils.os.CrossSystem;
 
-import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.lang.reflect.Method;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * Application utils provide statis helper functions concerning the applications System integration
@@ -35,106 +37,80 @@ import java.util.logging.Logger;
  */
 public class Application {
 
-    public final static long JAVA16 = 16000000;
-    public final static long JAVA17 = 17000000;
-    public final static long JAVA18 = 18000000;
-    private final static Logger LOGGER = Logger.getLogger(Application.class.getName());
-    public static PauseableOutputStream STD_OUT;
-    public static PauseableOutputStream ERR_OUT;
-    private static Boolean              IS_JARED      = null;
-    private static String               APP_FOLDER    = ".appwork";
-    private static String               ROOT;
-    private static long                 javaVersion   = 0;
-    private static Boolean              IS_SYNTHETICA = null;
-    private static Boolean              JVM64BIT      = null;
-    private static boolean              REDIRECTED    = false;
+    public static final long JAVA16 = 16000000L;
+    public static final long JAVA17 = 17000000L;
+    public static final long JAVA18 = 18000000L;
+    private static final char OLD_CHAR = '.';
+    private static final char NEW_CHAR = '/';
+    private static final Pattern COMPILE = Pattern.compile("\\.");
+    private static final String NO_JAR_FOUND = "No JarName Found";
+    private static final String APPLICATION_ROOT = "Application Root: ";
+    private static final String FILE_SEPARATOR = "file.separator";
+    private static final Pattern PATTERN = Pattern.compile("jar\\:.*\\.(jar|exe)\\!.*");
+    private static Boolean IS_JARED;
+    private static String APP_FOLDER = ".appwork";
+    private static String ROOT;
+    private static long javaVersion;
+    private static Boolean JVM64BIT;
 
-    static {
-        Application.redirectOutputStreams();
-    }
-
-    /**
-     * Adds a url to the classloader classpath this might fail if there is a security manager
-     * @param url url
-     * @param cl ClassLoader
-     * @throws IOException
-     */
-    public static void addUrlToClassPath(final URL url, final ClassLoader cl) throws IOException {
-        try {
-            // hack to add an url to the system classpath
-            final Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            method.invoke(cl, url);
-
-        } catch (final Throwable t) {
-            Log.exception(t);
-            throw new IOException("Error, could not add URL to system classloader");
-        }
-    }
 
     public static String getApplication() {
-        return Application.APP_FOLDER;
+        return APP_FOLDER;
     }
-
 
     /**
      * sets current Application Folder and Jar ID. MUST BE SET at startup! Can only be set once!
-     *
-     * @param newAppFolder
-     * @param newJar
+     * @param newAppFolder the desired Application Folder
      */
-    public synchronized static void setApplication(final String newAppFolder) {
-        Application.ROOT = null;
-        Application.APP_FOLDER = newAppFolder;
-    }
-
-    public static File getApplicationRoot() {
-        return Application.getRootByClass(Application.class, null);
-    }
-
-    public static String getHome() {
-        return Application.getRoot(Application.class);
+    public static void setApplication(String newAppFolder) {
+        ROOT = null;
+        APP_FOLDER = newAppFolder;
     }
 
     /**
-     * @param class1
-     * @return
+     * @return the root location of the application
      */
-    public static String getPackagePath(final Class<?> class1) {
+    public static File getApplicationRoot() {
+        return getRootByClass(Application.class, null);
+    }
+
+    public static String getHome() {
+        return getRoot(Application.class);
+    }
+
+    public static String getPackagePath(Class<?> class1) {
         // TODO Auto-generated method stub
-        return class1.getPackage().getName().replace('.', '/') + "/";
+        return class1.getPackage().getName().replace(OLD_CHAR, NEW_CHAR) + NEW_CHAR;
     }
 
 
     public static URL getHomeURL() {
 
         try {
-            return new File(Application.getHome()).toURI().toURL();
-        } catch (final MalformedURLException e) {
+            return new File(getHome()).toURI().toURL();
+        } catch (MalformedURLException e) {
             throw new WTFException(e);
         }
     }
 
     // returns the jar filename of clazz
-    public static File getJarFile(final Class<?> clazz) {
-        final String name = clazz.getName().replaceAll("\\.", "/") + ".class";
-        final URL url = Application.getRessourceURL(name);
-        final String prot = url.getProtocol();
-        final String path = url.getPath();
-        Log.L.info(url + "");
-        if (!"jar".equals(prot)) {
-            throw new WTFException("Works in Jared mode only");
-        }
-        final int index = path.indexOf(".jar!");
-        if (index < 0) {
+    public static File getJarFile(Class<?> clazz) {
+        String name = getClass(clazz);
+        URL url = getRessourceURL(name);
+        String prot = url.getProtocol();
+        String path = url.getPath();
+        Log.L.info(String.valueOf(url));
+        int index = path.indexOf(".jar!");
+        //noinspection CallToStringEquals
+        if (!"jar".equals(prot) || index < 0) {
             throw new WTFException("Works in Jared mode only");
         }
         try {
             return new File(new URL(path.substring(0, index + 4)).toURI());
-        } catch (final MalformedURLException e) {
+        } catch (MalformedURLException e) {
             Log.exception(Level.WARNING, e);
 
-        } catch (final URISyntaxException e) {
+        } catch (URISyntaxException e) {
             Log.exception(Level.WARNING, e);
 
         }
@@ -142,52 +118,50 @@ public class Application {
     }
 
     public static String getJarName(Class<?> clazz) {
-        if (clazz == null) {
-            clazz = Application.class;
-        }
-        final String name = clazz.getName().replaceAll("\\.", "/") + ".class";
-        final String url = Application.getRessourceURL(name).toString();
 
-        final int index = url.indexOf(".jar!");
+        String name=getClass(clazz);
+        String url = getRessourceURL(name).toString();
+
+        int index = url.indexOf(".jar!");
         if (index < 0) {
-            throw new IllegalStateException("No JarName Found");
+            throw new IllegalStateException(NO_JAR_FOUND);
         }
         try {
             return new File(new URL(url.substring(4, index + 4)).toURI()).getName();
-        } catch (final Exception e) {
+        } catch (Exception e) {
 
         }
-        throw new IllegalStateException("No JarName Found");
+        throw new IllegalStateException(NO_JAR_FOUND);
     }
 
     public static long getJavaVersion() {
-        if (Application.javaVersion > 0) {
-            return Application.javaVersion;
+        if (javaVersion > 0L) {
+            return javaVersion;
         }
         try {
             /* this version info contains more information */
             String version = System.getProperty("java.runtime.version");
-            if (version == null || version.trim().length() == 0) {
+            if (version == null || version.trim().isEmpty()) {
                 version = System.getProperty("java.version");
             }
             String v = new Regex(version, "^(\\d+\\.\\d+\\.\\d+)").getMatch(0);
-            final String u = new Regex(version, "^.*?_(\\d+)").getMatch(0);
-            final String b = new Regex(version, "^.*?(_|-)b(\\d+)$").getMatch(1);
-            v = v.replaceAll("\\.", "");
+            String u = new Regex(version, "^.*?_(\\d+)").getMatch(0);
+            String b = new Regex(version, "^.*?(_|-)b(\\d+)$").getMatch(1);
+            v = COMPILE.matcher(v).replaceAll("");
             /* 170uubbb */
             /* eg 1.6 = 16000000 */
             long ret = Long.parseLong(v) * 100000;
             if (u != null) {
                 /* append update number */
-                ret = ret + Long.parseLong(u) * 1000;
+                ret += Long.parseLong(u) * 1000;
             }
             if (b != null) {
                 /* append build number */
-                ret = ret + Long.parseLong(b);
+                ret += Long.parseLong(b);
             }
-            Application.javaVersion = ret;
+            javaVersion = ret;
             return ret;
-        } catch (final Exception e) {
+        } catch (Exception e) {
             Log.exception(e);
             return -1;
         }
@@ -195,12 +169,9 @@ public class Application {
 
     /**
      * Returns a ressourcefile relative to the instaldirectory
-     *
-     * @param relative
-     * @return
      */
-    public static File getResource(final String relative) {
-        return new File(Application.getHome(), relative);
+    public static File getResource(String relative) {
+        return new File(getHome(), relative);
     }
 
     /**
@@ -208,8 +179,8 @@ public class Application {
      * the fileurl to current wprkingdirectory
      *
      */
-    public static URL getRessourceURL(final String relative) {
-        return Application.getRessourceURL(relative, true);
+    public static URL getRessourceURL(String relative) {
+        return getRessourceURL(relative, true);
     }
 
     /**
@@ -227,7 +198,7 @@ public class Application {
      * first check local filesystem, then inside classpath
      *
      */
-    public static URL getRessourceURL(final String relative, final boolean preferClasspath) {
+    public static URL getRessourceURL(String relative, boolean preferClasspath) {
         try {
 
             if (relative == null) {
@@ -238,62 +209,61 @@ public class Application {
             }
             if (preferClasspath) {
 
-                final URL res = Application.class.getClassLoader().getResource(relative);
+                URL res = Application.class.getClassLoader().getResource(relative);
                 if (res != null) {
                     return res;
                 }
-                final File file = new File(Application.getHome(), relative);
+                File file = new File(getHome(), relative);
                 if (!file.exists()) {
                     return null;
                 }
                 return file.toURI().toURL();
 
             } else {
-                final File file = new File(Application.getHome(), relative);
+                File file = new File(getHome(), relative);
                 if (file.exists()) {
                     return file.toURI().toURL();
                 }
 
-                final URL res = Application.class.getClassLoader().getResource(relative);
+                URL res = Application.class.getClassLoader().getResource(relative);
                 if (res != null) {
                     return res;
                 }
 
             }
-        } catch (final MalformedURLException e) {
+        } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
 
-        /**
+    /**
      * Detects the applications home directory. it is either the pass of the appworkutils.jar or HOME/
      */
-    public static String getRoot(final Class<?> rootOfClazz) {
+    private static String getRoot(Class<?> rootOfClass) {
 
-        if (Application.ROOT != null) {
-            return Application.ROOT;
+        if (ROOT != null) {
+            return ROOT;
         }
-        final String key = "awuhome" + Application.APP_FOLDER;
-        final String sysProp = System.getProperty(key);
+        String key = "awuhome" + APP_FOLDER;
+        String sysProp = System.getProperty(key);
         if (sysProp != null) {
 
-            Application.ROOT = sysProp;
-            return Application.ROOT;
+            ROOT = sysProp;
+            return ROOT;
         }
-        if (Application.isJared(rootOfClazz)) {
+        if (isJared(rootOfClass)) {
             // this is the jar file
-            URL loc;
 
-            loc = rootOfClazz.getProtectionDomain().getCodeSource().getLocation();
+            URL loc = rootOfClass.getProtectionDomain().getCodeSource().getLocation();
 
-            File appRoot = null;
             try {
                 String path = loc.getPath();
                 // loc may be a
+                File appRoot = null;
                 try {
-                    appRoot = new File(java.net.URLDecoder.decode(path, "UTF-8"));
+                    appRoot = new File(URLDecoder.decode(path, "UTF-8"));
                     if (!appRoot.exists()) {
                         appRoot = null;
                     }
@@ -313,52 +283,45 @@ public class Application {
                     }
                 }
                 if (appRoot == null) {
-                    throw new URISyntaxException(loc + "", "Bad URI");
+                    throw new URISyntaxException(String.valueOf(loc), "Bad URI");
                 }
                 if (appRoot.isFile()) {
                     appRoot = appRoot.getParentFile();
                 }
-                Application.ROOT = appRoot.getAbsolutePath();
-                System.out.println("Application Root: " + Application.ROOT + " (jared) " + rootOfClazz);
-            } catch (final URISyntaxException e) {
+                ROOT = appRoot.getAbsolutePath();
+                System.out.println(APPLICATION_ROOT + ROOT + " (jared) " + rootOfClass);
+            } catch (URISyntaxException e) {
                 Log.exception(e);
-                Application.ROOT = System.getProperty("user.home") + System.getProperty("file.separator") + Application.APP_FOLDER + System.getProperty("file.separator");
-                System.out.println("Application Root: " + Application.ROOT + " (jared but error) " + rootOfClazz);
+                ROOT = System.getProperty("user.home") + System.getProperty(FILE_SEPARATOR) + APP_FOLDER + System.getProperty(FILE_SEPARATOR);
+                System.out.println(APPLICATION_ROOT + ROOT + " (jared but error) " + rootOfClass);
             }
         } else {
-            Application.ROOT = System.getProperty("user.home") + System.getProperty("file.separator") + Application.APP_FOLDER;
-            System.out.println("Application Root: " + Application.ROOT + " (DEV) " + rootOfClazz);
+            ROOT = System.getProperty("user.home") + System.getProperty(FILE_SEPARATOR) + APP_FOLDER;
+            System.out.println(APPLICATION_ROOT + ROOT + " (DEV) " + rootOfClass);
         }
         // do not use Log.L here. this might be null
-        return Application.ROOT;
+        return ROOT;
     }
 
-    /**
-     * @param class1
-     * @param subPaths
-     *            TODO
-     * @return
-     */
-    public static URL getRootUrlByClass(final Class<?> class1, final String subPaths) {
+
+    public static URL getRootUrlByClass(Class<?> class1, String subPaths) {
         // TODO Auto-generated method stub
         try {
-            return Application.getRootByClass(class1, subPaths).toURI().toURL();
-        } catch (final MalformedURLException e) {
+            return getRootByClass(class1, subPaths).toURI().toURL();
+        } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
 
-    public static File getRootByClass(final Class<?> class1, final String subPaths) {
+    private static File getRootByClass(Class<?> class1, String subPaths) {
         // this is the jar file
-        URL loc;
 
-        loc = class1.getProtectionDomain().getCodeSource().getLocation();
+        URL loc = class1.getProtectionDomain().getCodeSource().getLocation();
 
-        File appRoot;
         try {
-            appRoot = new File(loc.toURI());
+            File appRoot = new File(loc.toURI());
 
             if (appRoot.isFile()) {
                 appRoot = appRoot.getParentFile();
@@ -367,17 +330,15 @@ public class Application {
                 return new File(appRoot, subPaths);
             }
             return appRoot;
-        } catch (final URISyntaxException e) {
+        } catch (URISyntaxException e) {
             Log.exception(e);
             return null;
         }
     }
 
-    /**
-     * @return
-     */
+
     public static File getTemp() {
-        final File ret = Application.getResource("tmp");
+        File ret = getResource("tmp");
         if (!ret.exists()) {
             ret.mkdirs();
         }
@@ -388,43 +349,43 @@ public class Application {
      * @param cache
      * @return
      */
-    public static File getTempResource(final String cache) {
-        return new File(Application.getTemp(), cache);
+    public static File getTempResource(String cache) {
+        return new File(getTemp(), cache);
     }
 
     public static boolean is64BitJvm() {
-        if (Application.JVM64BIT != null) {
-            return Application.JVM64BIT;
+        if (JVM64BIT != null) {
+            return JVM64BIT;
         }
-        final String archDataModel = System.getProperty("sun.arch.data.model");
+        String archDataModel = System.getProperty("sun.arch.data.model");
         try {
             if (archDataModel != null) {
                 if (Integer.parseInt(archDataModel) == 64) {
-                    Application.JVM64BIT = true;
+                    JVM64BIT = true;
                     return true;
                 } else {
-                    Application.JVM64BIT = false;
+                    JVM64BIT = false;
                     return false;
                 }
             }
-        } catch (final Throwable e) {
+        } catch (Throwable e) {
         }
-        final boolean is64BitJVM = CrossSystem.is64BitArch();
-        Application.JVM64BIT = is64BitJVM;
+        boolean is64BitJVM = CrossSystem.is64BitArch();
+        JVM64BIT = is64BitJVM;
         return is64BitJVM;
     }
 
     /**
      * checks current java version for known issues/bugs or unsupported ones
      */
-    public static boolean isOutdatedJavaVersion(final boolean supportJAVA15) {
-        final long java = Application.getJavaVersion();
-        if (java < Application.JAVA16 && !CrossSystem.isMac()) {
+    public static boolean isOutdatedJavaVersion(boolean supportJAVA15) {
+        long java = getJavaVersion();
+        if (java < JAVA16 && !CrossSystem.isMac()) {
             Log.L.warning("Java 1.6 should be available on your System, please upgrade!");
             /* this is no mac os, so please use java>=1.6 */
             return true;
         }
-        if (java < Application.JAVA16 && !supportJAVA15) {
+        if (java < JAVA16 && !supportJAVA15) {
             Log.L.warning("Java 1.5 no longer supported!");
             /* we no longer support java 1.5 */
             return true;
@@ -445,7 +406,7 @@ public class Application {
              */
             return true;
         }
-        if (CrossSystem.isMac() && java >= Application.JAVA17 && java < 17006000l) {
+        if (CrossSystem.isMac() && java >= JAVA17 && java < 17006000l) {
             Log.L.warning("leaking semaphores bug");
             /*
              * leaking semaphores http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7166379
@@ -467,123 +428,91 @@ public class Application {
     /**
      * @param logger
      */
-//    public static void printSystemProperties(final LogInterface logger) {
-//        final Properties p = System.getProperties();
-//        final Enumeration keys = p.keys();
-//        final StringBuilder sb = new StringBuilder();
-//        String key;
-//        while (keys.hasMoreElements()) {
-//            key = (String) keys.nextElement();
-//            sb.append("SysProp: ").append(key).append(": ").append((String) p.get(key));
-//
-//            logger.info(sb.toString());
-//            sb.setLength(0);
-//        }
-//
-//        for (final Entry<String, String> e : System.getenv().entrySet()) {
-//
-//            sb.append("SysEnv: ").append(e.getKey()).append(": ").append(e.getValue());
-//            logger.info(sb.toString());
-//            sb.setLength(0);
-//        }
-//
-//        URL url = Application.getRessourceURL("version.nfo");
-//
-//        if (url != null) {
-//            try {
-//                logger.info(url + ":\r\n" + IO.readURLToString(url));
-//            } catch (final IOException e1) {
-//                logger.log(e1);
-//
-//            }
-//        }
-//        url = Application.getRessourceURL("build.json");
-//
-//        if (url != null) {
-//            try {
-//                logger.info(url + ":\r\n" + IO.readURLToString(url));
-//            } catch (final IOException e1) {
-//                logger.log(e1);
-//
-//            }
-//        }
-//
-//    }
+    public static void printSystemProperties(LogInterface logger) {
+        Properties p = System.getProperties();
+        Enumeration keys = p.keys();
+        StringBuilder sb = new StringBuilder();
+        String key;
+        while (keys.hasMoreElements()) {
+            key = (String) keys.nextElement();
+            sb.append("SysProp: ").append(key).append(": ").append((String) p.get(key));
+
+            logger.info(sb.toString());
+            sb.setLength(0);
+        }
+
+        for (Entry<String, String> e : System.getenv().entrySet()) {
+
+            sb.append("SysEnv: ").append(e.getKey()).append(": ").append(e.getValue());
+            logger.info(sb.toString());
+            sb.setLength(0);
+        }
+
+        URL url = getRessourceURL("version.nfo");
+
+        if (url != null) {
+            try {
+                logger.info(url + ":\r\n" + IO.readURLToString(url));
+            } catch (IOException e1) {
+                logger.log(e1);
+
+            }
+        }
+        url = getRessourceURL("build.json");
+
+        if (url != null) {
+            try {
+                logger.info(url + ":\r\n" + IO.readURLToString(url));
+            } catch (IOException e1) {
+                logger.log(e1);
+
+            }
+        }
+
+    }
+
+    private static String getClass(Class<?> clazz){
+        if (clazz == null) {
+            clazz = Application.class;
+        }
+        return COMPILE.matcher(clazz.getName()).replaceAll("/") + ".class";
+    }
 
     /**
      * Detects if the Application runs out of a jar or not.
      *
-     * @param rootOfClazz
+     * @param clazz
      *
      * @return
      */
-    public static boolean isJared(Class<?> rootOfClazz) {
-        if (Application.IS_JARED != null) {
+    private static boolean isJared(Class<?> clazz) {
+        if (IS_JARED != null) {
 
-            return Application.IS_JARED == Boolean.TRUE;
+            return Objects.equals(IS_JARED, Boolean.TRUE);
 
         }
-        if (rootOfClazz == null) {
-            rootOfClazz = Application.class;
-        }
-        final String name = rootOfClazz.getName().replaceAll("\\.", "/") + ".class";
-        final ClassLoader cll = Application.class.getClassLoader();
+        String name = getClass(clazz);
+        ClassLoader cll = Application.class.getClassLoader();
         if (cll == null) {
             Log.L.severe("getContextClassLoader() is null");
-            Application.IS_JARED = Boolean.TRUE;
+            IS_JARED = Boolean.TRUE;
             return true;
         }
-        // System.out.println(name);
-        final URL caller = cll.getResource(name);
+        URL caller = cll.getResource(name);
 
         // System.out.println(caller);
         /*
          * caller is null in case the ressource is not found or not enough rights, in that case we assume its not jared
          */
         if (caller == null) {
-            Application.IS_JARED = false;
+            IS_JARED = false;
             return false;
         }
-        boolean ret = caller.toString().matches("jar\\:.*\\.(jar|exe)\\!.*");
-        Application.IS_JARED = ret;
+        boolean ret = PATTERN.matcher(caller.toString()).matches();
+        IS_JARED = ret;
         return ret;
     }
 
-    public static void redirectOutputStreams() {
-        if (Application.REDIRECTED) {
-            return;
-        }
-        if (Charset.defaultCharset() == Charset.forName("cp1252")) {
-            Application.REDIRECTED = true;
-            // workaround.
-            // even 1252 is default codepage, windows console expects cp850
-            // codepage input
-            try {
-                System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out), true, "CP850"));
-            } catch (final UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            try {
-                System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err), true, "CP850"));
-            } catch (final UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        if (Application.STD_OUT == null) {
-            Application.STD_OUT = new PauseableOutputStream(System.out);
-
-            Application.ERR_OUT = new PauseableOutputStream(System.err);
-
-            PrintStream o;
-            System.setOut(o = new PrintStream(Application.STD_OUT));
-            PrintStream e;
-            System.setErr(e = new PrintStream(Application.ERR_OUT));
-            System.out.println("SetOut " + o);
-            System.out.println("SetErr " + e);
-        }
-    }
 
     /**
      * @return
@@ -594,169 +523,6 @@ public class Application {
 
     }
 
-    public static class PauseableOutputStream extends OutputStream {
-
-        private PrintStream           _out;
-        private ByteArrayOutputStream buffer;
-        private List<OutputStream> branches = null;
-
-        public PauseableOutputStream(PrintStream out) {
-            this._out = out;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.io.OutputStream#write(int)
-         */
-        @Override
-        public void write(int paramInt) throws IOException {
-            if (this.branches != null) {
-                for (OutputStream os : this.branches) {
-                    try {
-                        os.write(paramInt);
-                    } catch (Throwable e) {
-
-                    }
-                }
-            }
-            if (this.buffer != null) {
-                this.buffer.write(paramInt);
-                return;
-            }
-            this._out.write(paramInt);
-
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.io.OutputStream#write(byte[])
-         */
-        @Override
-        public void write(byte[] b) throws IOException {
-            if (this.branches != null) {
-                for (OutputStream os : this.branches) {
-                    try {
-                        os.write(b);
-                    } catch (Throwable e) {
-
-                    }
-                }
-            }
-            if (this.buffer != null) {
-                this.buffer.write(b);
-                return;
-            }
-            this._out.write(b);
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.io.OutputStream#write(byte[], int, int)
-         */
-        @Override
-        public void write(byte[] buff, int off, int len) throws IOException {
-
-            if (this.branches != null) {
-                for (OutputStream os : this.branches) {
-                    try {
-                        os.write(buff, off, len);
-                    } catch (Throwable e) {
-
-                    }
-                }
-            }
-            if (this.buffer != null) {
-                this.buffer.write(buff, off, len);
-                return;
-            }
-            this._out.write(buff, off, len);
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.io.OutputStream#flush()
-         */
-        @Override
-        public void flush() throws IOException {
-            if (this.buffer != null) {
-                this.buffer.flush();
-                return;
-            }
-            if (this.branches != null) {
-                for (OutputStream os : this.branches) {
-                    try {
-                        os.flush();
-                    } catch (Throwable e) {
-
-                    }
-                }
-            }
-            this._out.flush();
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.io.OutputStream#close()
-         */
-        @Override
-        public void close() throws IOException {
-            if (this.buffer != null) {
-                this.buffer.close();
-                this.setBufferEnabled(false);
-            }
-            if (this.branches != null) {
-                for (OutputStream os : this.branches) {
-                    try {
-                        os.close();
-                    } catch (Throwable e) {
-
-                    }
-                }
-            }
-            this._out.close();
-        }
-
-        /**
-         * @param b
-         * @throws IOException
-         */
-        public boolean setBufferEnabled(boolean b) throws IOException {
-            synchronized (this) {
-                if (b) {
-
-                    if (this.buffer != null) {
-                        return true;
-                    }
-                    this.buffer = new ByteArrayOutputStream();
-                    return false;
-                } else {
-                    if (this.buffer != null) {
-                        this.buffer.writeTo(this._out);
-                        this.buffer = null;
-                        return true;
-                    } else {
-                        return false;
-                    }
-
-                }
-            }
-        }
-
-        public void addBranch(OutputStream os) {
-            if (this.branches == null) {
-                this.branches = new ArrayList<OutputStream>();
-            }
-            this.branches.add(os);
-
-        }
-
-    }
-
     /**
      * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
      *
@@ -764,23 +530,20 @@ public class Application {
      * @return
      */
     public static File generateNumberedTempResource(String string) {
-        return Application.generateNumbered(Application.getTempResource(string));
+        return generateNumbered(getTempResource(string));
     }
 
     /**
      * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
      *
-     * @param string
+     * @param stringFile
      * @return
      */
-    public static File generateNumberedResource(String string) {
-        return Application.generateNumbered(Application.getResource(string));
+    public static File generateNumberedResource(String stringFile) {
+        return generateNumbered(getResource(stringFile));
 
     }
 
-    /**
-     * @param resource
-     */
     private static File generateNumbered(File orgFile) {
         int i = 0;
 
@@ -790,36 +553,12 @@ public class Application {
             i++;
 
             if (extension != null) {
-                file = new File(orgFile.getParentFile(), orgFile.getName().substring(0, orgFile.getName().length() - extension.length() - 1) + "." + i + "." + extension);
+                file = new File(orgFile.getParentFile(), orgFile.getName().substring(0, orgFile.getName().length() - extension.length() - 1) + '.' + i + '.' + extension);
             } else {
-                file = new File(orgFile.getParentFile(), orgFile.getName() + "." + i);
+                file = new File(orgFile.getParentFile(), orgFile.getName() + '.' + i);
             }
 
         }
         return file;
-
     }
-
-    /**
-     * check if the synthetica look and feel is used. make sure not to call this before you set the final look and feel! Else all calls will
-     * return the wrong results.
-     *
-     * @return
-     */
-    public static boolean isSyntheticaLookAndFeel() {
-
-        if (IS_SYNTHETICA != null) {
-            return IS_SYNTHETICA;
-        }
-        Class<?> cls;
-        try {
-            cls = Class.forName("de.javasoft.plaf.synthetica.SyntheticaLookAndFeel");
-
-            IS_SYNTHETICA = cls.isAssignableFrom(UIManager.getLookAndFeel().getClass());
-        } catch (Throwable e) {
-            IS_SYNTHETICA = false;
-        }
-        return IS_SYNTHETICA;
-    }
-
 }

@@ -9,8 +9,6 @@
  */
 package utils.logging;
 
-import utils.Application;
-
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -22,37 +20,36 @@ public class Log {
     /**
      * For shorter access
      */
-    public static Logger L = Log.LOGGER;
+    public static Logger L = LOGGER;
     private static LogToFileHandler fh;
 
     /**
      * Create the singleton logger instance
      */
     static {
-        Application.redirectOutputStreams();
-        Log.LOGGER = Logger.getLogger("org.appwork");
-        Log.LOGGER.setUseParentHandlers(false);
-        final ConsoleHandler cHandler = new ConsoleHandler();
+        LOGGER = Logger.getLogger("org.appwork");
+        LOGGER.setUseParentHandlers(false);
+        ConsoleHandler cHandler = new ConsoleHandler();
         cHandler.setLevel(Level.ALL);
         cHandler.setFormatter(new LogFormatter());
-        Log.LOGGER.addHandler(cHandler);
+        LOGGER.addHandler(cHandler);
         try {
-            Log.fh = new LogToFileHandler();
-            Log.fh.setFormatter(new FileLogFormatter());
-            Log.LOGGER.addHandler(Log.fh);
-        } catch (final Throwable e) {
-            Log.exception(e);
+            fh = new LogToFileHandler();
+            fh.setFormatter(new FileLogFormatter());
+            LOGGER.addHandler(fh);
+        } catch (Throwable e) {
+            exception(e);
         }
-        Log.LOGGER.addHandler(LogEventHandler.getInstance());
-        Log.LOGGER.setLevel(Level.WARNING);
+        LOGGER.addHandler(LogEventHandler.getInstance());
+        LOGGER.setLevel(Level.WARNING);
     }
 
-    public synchronized static void closeLogfile() {
-        if (Log.fh != null) {
-            Log.fh.flush();
-            Log.fh.close();
-            Log.LOGGER.removeHandler(Log.fh);
-            Log.fh = null;
+    public static synchronized void closeLogfile() {
+        if (fh != null) {
+            fh.flush();
+            fh.close();
+            LOGGER.removeHandler(fh);
+            fh = null;
         }
     }
 
@@ -63,20 +60,20 @@ public class Log {
      * @param level
      * @param e
      */
-    public static void exception(final Level level, final Throwable e) {
+    public static void exception(Level level, Throwable e) {
         try {
-            final StackTraceElement[] st = new Exception().getStackTrace();
+            StackTraceElement[] st = new Exception().getStackTrace();
             int i = 0;
             while (st[i].getClassName().equals(Log.class.getName())) {
                 i++;
             }
-            final LogRecord lr = new LogRecord(level, level.getName() + " Exception occurred");
+            LogRecord lr = new LogRecord(level, level.getName() + " Exception occurred");
             lr.setThrown(e);
             lr.setSourceClassName(st[i].getClassName() + "." + st[i].getMethodName());
             lr.setSourceMethodName(st[i].getFileName() + ":" + st[i].getLineNumber());
-            Log.getLogger().log(lr);
-        } catch (final Throwable a1) {
-            Log.L.log(level, level.getName() + " Exception occurred", e);
+            getLogger().log(lr);
+        } catch (Throwable a1) {
+            L.log(level, level.getName() + " Exception occurred", e);
         }
     }
 
@@ -97,12 +94,12 @@ public class Log {
         if (lvl == null) {
             lvl = Level.SEVERE;
         }
-        Log.exception(lvl, e);
+        exception(lvl, e);
     }
 
-    public synchronized static void flushLogFile() {
-        if (Log.fh != null) {
-            Log.fh.flush();
+    public static synchronized void flushLogFile() {
+        if (fh != null) {
+            fh.flush();
         }
     }
 
@@ -112,7 +109,7 @@ public class Log {
      * @return
      */
     public static Logger getLogger() {
-        return Log.LOGGER;
+        return LOGGER;
     }
 
 }

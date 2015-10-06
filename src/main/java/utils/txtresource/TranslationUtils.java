@@ -25,7 +25,7 @@ public class TranslationUtils {
 
         for (final Class<? extends TranslateInterface> class1 : classes) {
             final String rel = class1.getName().replace(".", "/") + ".class";
-            final String file = new File(Application.getRessourceURL(rel).toURI()).getParentFile().getAbsolutePath().replace("\\bin\\", "\\src\\");
+            final String file = new File(Application.getResourceURL(rel).toURI()).getParentFile().getAbsolutePath().replace("\\bin\\", "\\src\\");
 
             for (final String lng : class1.getAnnotation(Defaults.class).lngs()) {
                 final File f = new File(file + "/" + class1.getSimpleName() + "." + lng + ".lng");

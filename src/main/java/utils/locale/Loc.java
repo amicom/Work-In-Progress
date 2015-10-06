@@ -166,7 +166,7 @@ public class Loc {
 
         // Search in jar:
         try {
-            URL url = Application.getRessourceURL("languages/");
+            URL url = Application.getResourceURL("languages/");
             if (url != null) {
                 Enumeration<URL> resources;
 
@@ -222,7 +222,7 @@ public class Loc {
 
     public static URL getResourceURL(final String loc) throws MalformedURLException {
         final File singleFile = Application.getResource("languages/" + loc + ".loc");
-        URL file = Application.getRessourceURL("languages/" + loc + ".loc");
+        URL file = Application.getResourceURL("languages/" + loc + ".loc");
         if (singleFile.exists() && singleFile.length() > 0 || file == null) {
             file = singleFile.toURI().toURL();
         }

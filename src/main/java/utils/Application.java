@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2009 - 2010 AppWork UG(haftungsbeschränkt) <e-mail@appwork.org>
- * <p/>
+ * <p>
  * This file is part of org.appwork.utils
- * <p/>
+ * <p>
  * This software is licensed under the Artistic License 2.0,
  * see the LICENSE file or http://www.opensource.org/licenses/artistic-license-2.0.php
  * for details
@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
  * Application utils provide statis helper functions concerning the applications System integration
  *
  * @author $Author: unknown$
- *
  */
 public class Application {
 
@@ -47,24 +46,27 @@ public class Application {
     private static final String APPLICATION_ROOT = "Application Root: ";
     private static final String FILE_SEPARATOR = "file.separator";
     private static final Pattern PATTERN = Pattern.compile("jar\\:.*\\.(jar|exe)\\!.*");
+    private static final Pattern DIGITS_ONLY_PATTERN = Pattern.compile("[^\\d]");
     private static Boolean IS_JARED;
-    private static String APP_FOLDER = ".appwork";
+    private static String appFolder = ".appwork";
     private static String ROOT;
-    private static long javaVersion;
+    private static int javaVersion;
     private static Boolean JVM64BIT;
+    private static File TEMP;
 
 
     public static String getApplication() {
-        return APP_FOLDER;
+        return appFolder;
     }
 
     /**
      * sets current Application Folder and Jar ID. MUST BE SET at startup! Can only be set once!
+     *
      * @param newAppFolder the desired Application Folder
      */
     public static void setApplication(String newAppFolder) {
         ROOT = null;
-        APP_FOLDER = newAppFolder;
+        appFolder = newAppFolder;
     }
 
     /**
@@ -95,32 +97,26 @@ public class Application {
 
     // returns the jar filename of clazz
     public static File getJarFile(Class<?> clazz) {
-        String name = getClass(clazz);
-        URL url = getRessourceURL(name);
-        String prot = url.getProtocol();
+        URL url = getResourceURL(getClass(clazz));
         String path = url.getPath();
         Log.L.info(String.valueOf(url));
         int index = path.indexOf(".jar!");
         //noinspection CallToStringEquals
-        if (!"jar".equals(prot) || index < 0) {
+        if (!"jar".equals(url.getProtocol()) || index < 0) {
             throw new WTFException("Works in Jared mode only");
         }
         try {
             return new File(new URL(path.substring(0, index + 4)).toURI());
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             Log.exception(Level.WARNING, e);
-
-        } catch (URISyntaxException e) {
-            Log.exception(Level.WARNING, e);
-
         }
         return null;
     }
 
     public static String getJarName(Class<?> clazz) {
 
-        String name=getClass(clazz);
-        String url = getRessourceURL(name).toString();
+        String name = getClass(clazz);
+        String url = getResourceURL(name).toString();
 
         int index = url.indexOf(".jar!");
         if (index < 0) {
@@ -128,40 +124,22 @@ public class Application {
         }
         try {
             return new File(new URL(url.substring(4, index + 4)).toURI()).getName();
-        } catch (Exception e) {
-
+        } catch (MalformedURLException | URISyntaxException | RuntimeException ignored) {
         }
         throw new IllegalStateException(NO_JAR_FOUND);
     }
 
-    public static long getJavaVersion() {
-        if (javaVersion > 0L) {
+    public static int getJavaVersion() {
+        if (javaVersion > 0) {
             return javaVersion;
         }
         try {
             /* this version info contains more information */
             String version = System.getProperty("java.runtime.version");
-            if (version == null || version.trim().isEmpty()) {
-                version = System.getProperty("java.version");
-            }
-            String v = new Regex(version, "^(\\d+\\.\\d+\\.\\d+)").getMatch(0);
-            String u = new Regex(version, "^.*?_(\\d+)").getMatch(0);
-            String b = new Regex(version, "^.*?(_|-)b(\\d+)$").getMatch(1);
-            v = COMPILE.matcher(v).replaceAll("");
-            /* 170uubbb */
-            /* eg 1.6 = 16000000 */
-            long ret = Long.parseLong(v) * 100000;
-            if (u != null) {
-                /* append update number */
-                ret += Long.parseLong(u) * 1000;
-            }
-            if (b != null) {
-                /* append build number */
-                ret += Long.parseLong(b);
-            }
-            javaVersion = ret;
-            return ret;
-        } catch (Exception e) {
+            int ver = Integer.parseInt(DIGITS_ONLY_PATTERN.matcher(version).replaceAll(""));
+            javaVersion = ver;
+            return ver;
+        } catch (NumberFormatException e) {
             Log.exception(e);
             return -1;
         }
@@ -177,35 +155,33 @@ public class Application {
     /**
      * returns the url for the resource. if The resource can be found in classpath, it will be returned. otherwise the function will return
      * the fileurl to current wprkingdirectory
-     *
      */
-    public static URL getRessourceURL(String relative) {
-        return getRessourceURL(relative, true);
+    public static URL getResourceURL(String relative) {
+        return getResourceURL(relative, true);
     }
 
     /**
      * Returns the Resource url for relative.
-     *
+     * <p>
      * NOTE:this function only returns URL's that really exists!
-     *
+     * <p>
      * if preferClassPath is true:
-     *
+     * <p>
      * we first check if there is a ressource available inside current classpath, for example inside the jar itself. if no such URL exists
      * we check for file in local filesystem
-     *
+     * <p>
      * if preferClassPath if false:
-     *
+     * <p>
      * first check local filesystem, then inside classpath
-     *
      */
-    public static URL getRessourceURL(String relative, boolean preferClasspath) {
+    public static URL getResourceURL(String relative, boolean preferClasspath) {
         try {
 
             if (relative == null) {
                 return null;
             }
             if (relative.startsWith("/") || relative.startsWith("\\")) {
-                throw new WTFException("getRessourceURL only works with relative paths.");
+                throw new WTFException("getResourceURL only works with relative paths.");
             }
             if (preferClasspath) {
 
@@ -246,7 +222,7 @@ public class Application {
         if (ROOT != null) {
             return ROOT;
         }
-        String key = "awuhome" + APP_FOLDER;
+        String key = "awuhome" + appFolder;
         String sysProp = System.getProperty(key);
         if (sysProp != null) {
 
@@ -289,29 +265,30 @@ public class Application {
                     appRoot = appRoot.getParentFile();
                 }
                 ROOT = appRoot.getAbsolutePath();
-                System.out.println(APPLICATION_ROOT + ROOT + " (jared) " + rootOfClass);
+                Log.L.info(APPLICATION_ROOT + ROOT + " (jared) " + rootOfClass);
             } catch (URISyntaxException e) {
                 Log.exception(e);
-                ROOT = System.getProperty("user.home") + System.getProperty(FILE_SEPARATOR) + APP_FOLDER + System.getProperty(FILE_SEPARATOR);
-                System.out.println(APPLICATION_ROOT + ROOT + " (jared but error) " + rootOfClass);
+                ROOT = System.getProperty("user.home") + System.getProperty(FILE_SEPARATOR) + appFolder + System.getProperty(FILE_SEPARATOR);
+                Log.L.warning(APPLICATION_ROOT + ROOT + " (jared but error) " + rootOfClass);
             }
         } else {
-            ROOT = System.getProperty("user.home") + System.getProperty(FILE_SEPARATOR) + APP_FOLDER;
-            System.out.println(APPLICATION_ROOT + ROOT + " (DEV) " + rootOfClass);
+            ROOT = System.getProperty("user.home") + System.getProperty(FILE_SEPARATOR) + appFolder;
+
+            Log.L.info(APPLICATION_ROOT + ROOT + " (DEV) " + rootOfClass);
         }
-        // do not use Log.L here. this might be null
         return ROOT;
     }
 
 
     public static URL getRootUrlByClass(Class<?> class1, String subPaths) {
-        // TODO Auto-generated method stub
-        try {
-            return getRootByClass(class1, subPaths).toURI().toURL();
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            try {
+                File file = getRootByClass(class1, subPaths);
+                if (file != null) {
+                    return file.toURI().toURL();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         return null;
     }
 
@@ -336,13 +313,13 @@ public class Application {
         }
     }
 
-
     public static File getTemp() {
-        File ret = getResource("tmp");
-        if (!ret.exists()) {
-            ret.mkdirs();
+        if(TEMP !=null){
+            return TEMP;
         }
-        return ret;
+        TEMP = getResource("tmp");
+        TEMP.mkdirs();
+        return TEMP;
     }
 
     /**
@@ -448,7 +425,7 @@ public class Application {
             sb.setLength(0);
         }
 
-        URL url = getRessourceURL("version.nfo");
+        URL url = getResourceURL("version.nfo");
 
         if (url != null) {
             try {
@@ -458,7 +435,7 @@ public class Application {
 
             }
         }
-        url = getRessourceURL("build.json");
+        url = getResourceURL("build.json");
 
         if (url != null) {
             try {
@@ -471,7 +448,7 @@ public class Application {
 
     }
 
-    private static String getClass(Class<?> clazz){
+    private static String getClass(Class<?> clazz) {
         if (clazz == null) {
             clazz = Application.class;
         }
@@ -482,7 +459,6 @@ public class Application {
      * Detects if the Application runs out of a jar or not.
      *
      * @param clazz
-     *
      * @return
      */
     private static boolean isJared(Class<?> clazz) {
@@ -500,10 +476,6 @@ public class Application {
         }
         URL caller = cll.getResource(name);
 
-        // System.out.println(caller);
-        /*
-         * caller is null in case the ressource is not found or not enough rights, in that case we assume its not jared
-         */
         if (caller == null) {
             IS_JARED = false;
             return false;
@@ -513,10 +485,6 @@ public class Application {
         return ret;
     }
 
-
-    /**
-     * @return
-     */
     public static boolean isHeadless() {
 
         return GraphicsEnvironment.isHeadless();

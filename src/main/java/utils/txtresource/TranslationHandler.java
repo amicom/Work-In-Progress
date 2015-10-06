@@ -150,14 +150,14 @@ public class TranslationHandler implements InvocationHandler {
 
         if (tryCustom) {
             path = rPath != null ? "translations/custom/" + rPath.value().newInstance().getPath() + "." + string + ".lng" : "translations/custom/" + this.tInterface.getName().replace(".", "/") + "." + string + ".lng";
-            url = Application.getRessourceURL(path, false);
+            url = Application.getResourceURL(path, false);
             if (url != null) {
                 Log.L.finer("Load Custom Translation " + url);
             }
         }
         if (url == null) {
             path = rPath != null ? "translations/" + rPath.value().newInstance().getPath() + "." + string + ".lng" : "translations/" + this.tInterface.getName().replace(".", "/") + "." + string + ".lng";
-            url = Application.getRessourceURL(path, false);
+            url = Application.getResourceURL(path, false);
             if (url != null) {
                 Log.L.finer("Load Translation " + url);
             }
@@ -166,7 +166,7 @@ public class TranslationHandler implements InvocationHandler {
             // translations files may either be located in the same path as the
             // interface is located, or in a translations/namespace
             path = rPath != null ? this.tInterface.getPackage().getName().replace(".", "/") + "/" + rPath.value().newInstance().getPath() + "." + string + ".lng" : this.tInterface.getName().replace(".", "/") + "." + string + ".lng";
-            url = Application.getRessourceURL(path, false);
+            url = Application.getResourceURL(path, false);
 
             if (url != null) {
                 Log.L.finer("Load Neighbour Translation " + url);
@@ -175,7 +175,7 @@ public class TranslationHandler implements InvocationHandler {
 
         if (url == null && rPath != null) {
             path = rPath.value().newInstance().getPath();
-            url = Application.getRessourceURL(path, false);
+            url = Application.getResourceURL(path, false);
 
             if (url != null) {
                 Log.L.finer("Load DynamicResourcePath Translation " + url);

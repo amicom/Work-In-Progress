@@ -93,7 +93,7 @@ public abstract class ListHandler<T> extends KeyHandler<T> {
     protected void initHandler() throws Throwable {
         this.path = new File(this.storageHandler.getPath() + "." + this.getKey() + "." + (this.cryptKey != null ? "ejs" : "json"));
         if (this.storageHandler.getRelativCPPath() != null && !this.path.exists()) {
-            this.url = Application.getRessourceURL(this.storageHandler.getRelativCPPath() + "." + this.getKey() + "." + (this.cryptKey != null ? "ejs" : "json"));
+            this.url = Application.getResourceURL(this.storageHandler.getRelativCPPath() + "." + this.getKey() + "." + (this.cryptKey != null ? "ejs" : "json"));
         }
 
         this.useObjectCache = this.getAnnotation(DisableObjectCache.class) == null;

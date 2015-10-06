@@ -48,7 +48,7 @@ public class PublicSuffixList {
     }
 
     private PublicSuffixList() throws IOException {
-        this(Application.getRessourceURL("org/appwork/utils/net/effective_tld_names.dat"));
+        this(Application.getResourceURL("org/appwork/utils/net/effective_tld_names.dat"));
     }
 
     public static PublicSuffixList getInstance() {

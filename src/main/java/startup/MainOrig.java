@@ -111,7 +111,7 @@ public class MainOrig {
 //
 //                    Enumeration<String> names = lm.getLoggerNames();
 //                    while (names.hasMoreElements()) {
-//                        manager.addLogger(lm.getLogger(names.nextElement()));
+//                        manager.addLogger(lm.getL(names.nextElement()));
 //
 //                    }
 //                }
@@ -125,8 +125,8 @@ public class MainOrig {
 //
 //            @Override
 //            public void onWriteException(final Throwable e, final File file, final byte[] data) {
-//                LogController.getInstance().getLogger("GlobalIOErrors").severe("An error occured while writing " + data.length + " bytes to " + file);
-//                LogController.getInstance().getLogger("GlobalIOErrors").log(e);
+//                LogController.getInstance().getL("GlobalIOErrors").severe("An error occured while writing " + data.length + " bytes to " + file);
+//                LogController.getInstance().getL("GlobalIOErrors").log(e);
 //                if (reported.compareAndSet(false, true)) {
 //                    new Thread() {
 //                        public void run() {
@@ -146,7 +146,7 @@ public class MainOrig {
 //
 //            @Override
 //            public void onReadStreamException(final Throwable e, final java.io.InputStream fis) {
-//                LogController.getInstance().getLogger("GlobalIOErrors").log(e);
+//                LogController.getInstance().getL("GlobalIOErrors").log(e);
 //                if (reported.compareAndSet(false, true)) {
 //                    new Thread() {
 //                        public void run() {
@@ -189,7 +189,7 @@ public class MainOrig {
 //
 //    private static void copySVNtoHome() {
 //        try {
-//            if (!Application.isJared(null) && Application.getRessourceURL("org/jdownloader/update/JDUpdateClient.class") == null) {
+//            if (!Application.isJared(null) && Application.getResourceURL("org/jdownloader/update/JDUpdateClient.class") == null) {
 //
 //                File workspace = new File(MainOrig.class.getResource("/").toURI()).getParentFile();
 //                File svnEntriesFile = new File(workspace, ".svn/entries");
@@ -223,7 +223,7 @@ public class MainOrig {
 //                        IO.writeStringToFile(lastSvnUpdateFile, lastMod + "");
 //                    }
 //                }
-//                // URL mainClass = Application.getRessourceURL("org", true);
+//                // URL mainClass = Application.getResourceURL("org", true);
 //                //
 //                // File svnJar = new File(new File(mainClass.toURI()).getParentFile().getParentFile(), "dev/JDownloader.jar");
 //                // FileCreationManager.getInstance().delete(jdjar, null);

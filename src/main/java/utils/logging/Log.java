@@ -9,47 +9,48 @@
  */
 package utils.logging;
 
+import org.slf4j.LoggerFactory;
+
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-public class Log {
+public  enum Log {;
 
-    private static Logger LOGGER;
-    /**
-     * For shorter access
-     */
-    public static Logger L = LOGGER;
-    private static LogToFileHandler fh;
 
-    /**
-     * Create the singleton logger instance
-     */
+    public static final Logger L;
+
+    public static final org.slf4j.Logger log;
+
+    private static final ThreadLocal<LogToFileHandler> fh = new ThreadLocal<>();
+    private static final String EXCEPTION_MESSAGE = " Exception occurred";
+
     static {
-        LOGGER = Logger.getLogger("org.appwork");
-        LOGGER.setUseParentHandlers(false);
+        L = Logger.getLogger("logger");
+        log =  LoggerFactory.getLogger(Log.class);
+        L.setUseParentHandlers(false);
         ConsoleHandler cHandler = new ConsoleHandler();
         cHandler.setLevel(Level.ALL);
         cHandler.setFormatter(new LogFormatter());
-        LOGGER.addHandler(cHandler);
+        L.addHandler(cHandler);
         try {
-            fh = new LogToFileHandler();
-            fh.setFormatter(new FileLogFormatter());
-            LOGGER.addHandler(fh);
+            fh.set(new LogToFileHandler());
+            fh.get().setFormatter(new FileLogFormatter());
+            L.addHandler(fh.get());
         } catch (Throwable e) {
             exception(e);
         }
-        LOGGER.addHandler(LogEventHandler.getInstance());
-        LOGGER.setLevel(Level.WARNING);
+        L.addHandler(LogEventHandler.getInstance());
+        L.setLevel(Level.WARNING);
     }
 
     public static synchronized void closeLogfile() {
-        if (fh != null) {
-            fh.flush();
-            fh.close();
-            LOGGER.removeHandler(fh);
-            fh = null;
+        if (fh.get() != null) {
+            fh.get().flush();
+            fh.get().close();
+            L.removeHandler(fh.get());
+            fh.set(null);
         }
     }
 
@@ -67,13 +68,13 @@ public class Log {
             while (st[i].getClassName().equals(Log.class.getName())) {
                 i++;
             }
-            LogRecord lr = new LogRecord(level, level.getName() + " Exception occurred");
+            LogRecord lr = new LogRecord(level, level.getName() + EXCEPTION_MESSAGE);
             lr.setThrown(e);
-            lr.setSourceClassName(st[i].getClassName() + "." + st[i].getMethodName());
-            lr.setSourceMethodName(st[i].getFileName() + ":" + st[i].getLineNumber());
-            getLogger().log(lr);
-        } catch (Throwable a1) {
-            L.log(level, level.getName() + " Exception occurred", e);
+            lr.setSourceClassName(st[i].getClassName() + '.' + st[i].getMethodName());
+            lr.setSourceMethodName(st[i].getFileName() + ':' + st[i].getLineNumber());
+            L.log(lr);
+        } catch (Throwable ignored) {
+            L.log(level, level.getName() + EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -98,8 +99,8 @@ public class Log {
     }
 
     public static synchronized void flushLogFile() {
-        if (fh != null) {
-            fh.flush();
+        if (fh.get() != null) {
+            fh.get().flush();
         }
     }
 
@@ -108,8 +109,8 @@ public class Log {
      *
      * @return
      */
-    public static Logger getLogger() {
-        return LOGGER;
+    public static Logger getL() {
+        return L;
     }
 
 }

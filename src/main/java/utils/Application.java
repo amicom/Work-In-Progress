@@ -9,9 +9,10 @@
  */
 package utils;
 
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
 import utils.exceptions.WTFException;
 import utils.logging.Log;
-import utils.logging.LogInterface;
 import utils.os.CrossSystem;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
@@ -36,11 +37,27 @@ import java.util.regex.Pattern;
  */
 public class Application {
 
+    /**
+     * @deprecated Use JavaVersion.JAVA_1_6
+     */
+    @Deprecated
     public static final long JAVA16 = 16000000L;
+    /**
+     * @deprecated Use JavaVersion.JAVA_1_7
+     */
+    @Deprecated
     public static final long JAVA17 = 17000000L;
+    /**
+     * @deprecated Use JavaVersion.JAVA_1_8
+     */
+    @Deprecated
     public static final long JAVA18 = 18000000L;
-    private static final char OLD_CHAR = '.';
+
+    public static final JavaVersion JAVA_MIN = JavaVersion.JAVA_1_8;
+    public static final String APP_NAME = "JDownloader";
+    private static final char DOT_CHAR = '.';
     private static final char NEW_CHAR = '/';
+    private static final char NEW_LINE = '\n';
     private static final Pattern COMPILE = Pattern.compile("\\.");
     private static final String NO_JAR_FOUND = "No JarName Found";
     private static final String APPLICATION_ROOT = "Application Root: ";
@@ -53,7 +70,6 @@ public class Application {
     private static int javaVersion;
     private static Boolean JVM64BIT;
     private static File TEMP;
-
 
     public static String getApplication() {
         return appFolder;
@@ -76,15 +92,19 @@ public class Application {
         return getRootByClass(Application.class, null);
     }
 
+    public static File lets(){
+
+        return SystemUtils.getUserDir();
+//       return ClassPathUtils.toFullyQualifiedName(Application.class,"");
+    }
+
     public static String getHome() {
         return getRoot(Application.class);
     }
 
     public static String getPackagePath(Class<?> class1) {
-        // TODO Auto-generated method stub
-        return class1.getPackage().getName().replace(OLD_CHAR, NEW_CHAR) + NEW_CHAR;
+        return class1.getPackage().getName().replace(DOT_CHAR, NEW_CHAR) + NEW_CHAR;
     }
-
 
     public static URL getHomeURL() {
 
@@ -135,7 +155,7 @@ public class Application {
         }
         try {
             /* this version info contains more information */
-            String version = System.getProperty("java.runtime.version");
+            String version = System.getProperty("java.version");
             int ver = Integer.parseInt(DIGITS_ONLY_PATTERN.matcher(version).replaceAll(""));
             javaVersion = ver;
             return ver;
@@ -208,7 +228,6 @@ public class Application {
 
             }
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -281,14 +300,14 @@ public class Application {
 
 
     public static URL getRootUrlByClass(Class<?> class1, String subPaths) {
-            try {
-                File file = getRootByClass(class1, subPaths);
-                if (file != null) {
-                    return file.toURI().toURL();
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+        try {
+            File file = getRootByClass(class1, subPaths);
+            if (file != null) {
+                return file.toURI().toURL();
             }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -314,7 +333,7 @@ public class Application {
     }
 
     public static File getTemp() {
-        if(TEMP !=null){
+        if (TEMP != null) {
             return TEMP;
         }
         TEMP = getResource("tmp");
@@ -322,10 +341,6 @@ public class Application {
         return TEMP;
     }
 
-    /**
-     * @param cache
-     * @return
-     */
     public static File getTempResource(String cache) {
         return new File(getTemp(), cache);
     }
@@ -345,103 +360,58 @@ public class Application {
                     return false;
                 }
             }
-        } catch (Throwable e) {
+        } catch (NumberFormatException ignored) {
         }
         boolean is64BitJVM = CrossSystem.is64BitArch();
         JVM64BIT = is64BitJVM;
         return is64BitJVM;
     }
 
+
     /**
      * checks current java version for known issues/bugs or unsupported ones
      */
-    public static boolean isOutdatedJavaVersion(boolean supportJAVA15) {
-        long java = getJavaVersion();
-        if (java < JAVA16 && !CrossSystem.isMac()) {
-            Log.L.warning("Java 1.6 should be available on your System, please upgrade!");
-            /* this is no mac os, so please use java>=1.6 */
-            return true;
-        }
-        if (java < JAVA16 && !supportJAVA15) {
-            Log.L.warning("Java 1.5 no longer supported!");
-            /* we no longer support java 1.5 */
-            return true;
-        }
-        if (java >= 16018000l && java < 16019000l) {
-            Log.L.warning("Java 1.6 Update 18 has a serious bug in garbage collector!");
-            /*
-             * java 1.6 update 18 has a bug in garbage collector, causes java crashes
-             *
-             * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6847956
-             */
-            return true;
-        }
-        if (java >= 16010000l && java < 16011000l) {
-            Log.L.warning("Java 1.6 Update 10 has a swing bug!");
-            /*
-             * 16010.26 http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6657923
-             */
-            return true;
-        }
-        if (CrossSystem.isMac() && java >= JAVA17 && java < 17006000l) {
-            Log.L.warning("leaking semaphores bug");
-            /*
-             * leaking semaphores http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7166379
-             */
-            return true;
-        }
-        if (CrossSystem.isMac() && java >= 17250000l && java < 17550000l) {
-            Log.L.warning("freezing AppKit thread bug");
-            /*
-             * http://bugs.java.com/view_bug.do?bug_id=8025588
-             *
-             * Frozen AppKit thread
-             */
+    public static boolean isOutdatedJavaVersion() {
+        String java = SystemUtils.JAVA_VERSION;
+
+        if (SystemUtils.isJavaVersionAtLeast(JAVA_MIN)) {
+            Log.L.warning("Your version of Java " + java + " no longer supported! Please upgrade!");
+        } else {
+            Log.log.info("Your Java version {} is compatible with " + APP_NAME, java);
             return true;
         }
         return false;
     }
 
-    /**
-     * @param logger
-     */
-    public static void printSystemProperties(LogInterface logger) {
+    public static void printSystemProperties() {
         Properties p = System.getProperties();
-        Enumeration keys = p.keys();
-        StringBuilder sb = new StringBuilder();
-        String key;
-        while (keys.hasMoreElements()) {
-            key = (String) keys.nextElement();
-            sb.append("SysProp: ").append(key).append(": ").append((String) p.get(key));
-
-            logger.info(sb.toString());
-            sb.setLength(0);
+        Iterator<Object> iterator = p.keySet().iterator();
+        StringBuilder sb = new StringBuilder(0);
+        while (iterator.hasNext()) {
+            String key = iterator.next().toString();
+            sb.append("SysProp: ").append(key).append(": ").append(p.getProperty(key)).append(NEW_LINE);
         }
 
         for (Entry<String, String> e : System.getenv().entrySet()) {
-
-            sb.append("SysEnv: ").append(e.getKey()).append(": ").append(e.getValue());
-            logger.info(sb.toString());
-            sb.setLength(0);
+            sb.append("SysEnv: ").append(e.getKey()).append(": ").append(e.getValue()).append(NEW_LINE);
         }
-
+        Log.log.info(sb.toString());
         URL url = getResourceURL("version.nfo");
 
         if (url != null) {
             try {
-                logger.info(url + ":\r\n" + IO.readURLToString(url));
+                Log.log.info("{}:\r\n{}", url, IO.readURLToString(url));
             } catch (IOException e1) {
-                logger.log(e1);
-
+                Log.log.info(e1.getMessage());
             }
         }
         url = getResourceURL("build.json");
 
         if (url != null) {
             try {
-                logger.info(url + ":\r\n" + IO.readURLToString(url));
+                Log.L.info(url + ":\r\n" + IO.readURLToString(url));
             } catch (IOException e1) {
-                logger.log(e1);
+                Log.L.info(e1.getMessage());
 
             }
         }
@@ -457,9 +427,6 @@ public class Application {
 
     /**
      * Detects if the Application runs out of a jar or not.
-     *
-     * @param clazz
-     * @return
      */
     private static boolean isJared(Class<?> clazz) {
         if (IS_JARED != null) {
@@ -485,48 +452,14 @@ public class Application {
         return ret;
     }
 
+    /**
+     * @deprecated - use SystemUtils.isJavaAwtHeadless()
+     * @return true if JAVA_AWT_HEADLESS is "true", false otherwise
+     */
+    @Deprecated
     public static boolean isHeadless() {
 
         return GraphicsEnvironment.isHeadless();
 
-    }
-
-    /**
-     * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
-     *
-     * @param string
-     * @return
-     */
-    public static File generateNumberedTempResource(String string) {
-        return generateNumbered(getTempResource(string));
-    }
-
-    /**
-     * returns a file that does not exists. thus it ads a counter to the path until the resulting file does not exist
-     *
-     * @param stringFile
-     * @return
-     */
-    public static File generateNumberedResource(String stringFile) {
-        return generateNumbered(getResource(stringFile));
-
-    }
-
-    private static File generateNumbered(File orgFile) {
-        int i = 0;
-
-        String extension = Files.getExtension(orgFile.getName());
-        File file = null;
-        while (file == null || file.exists()) {
-            i++;
-
-            if (extension != null) {
-                file = new File(orgFile.getParentFile(), orgFile.getName().substring(0, orgFile.getName().length() - extension.length() - 1) + '.' + i + '.' + extension);
-            } else {
-                file = new File(orgFile.getParentFile(), orgFile.getName() + '.' + i);
-            }
-
-        }
-        return file;
     }
 }

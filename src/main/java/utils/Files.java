@@ -24,35 +24,35 @@ public class Files {
     /**
      * delete all files/folders that are given
      */
-    public static void deleteRecursiv(final File file) throws IOException {
-        Files.deleteRecursiv(file, true);
+    public static void deleteRecursiv(File file) throws IOException {
+        deleteRecursiv(file, true);
     }
 
-    public static void deleteRecursiv(final File file, final boolean breakOnError) throws IOException {
+    public static void deleteRecursiv(File file, boolean breakOnError) throws IOException {
         if (!file.exists()) {
             throw new FileNotFoundException(file.getAbsolutePath());
         }
         if (file.isDirectory()) {
-            final File[] files = file.listFiles();
+            File[] files = file.listFiles();
             if (files != null) {
-                for (final File f : files) {
-                    Files.deleteRecursiv(f, breakOnError);
+                for (File f : files) {
+                    deleteRecursiv(f, breakOnError);
                 }
             }
         }
         System.out.println(" Delete file " + file);
-        final boolean fd = file.delete();
+        boolean fd = file.delete();
         if (file.exists() && !fd && breakOnError) {
             throw new IOException("Could not delete " + file);
         }
 
     }
 
-    public static LinkedList<String> getDirectories_NonRecursive(final File startDirectory, final boolean includeStart) throws IOException {
-        final LinkedList<String> done = new LinkedList<String>();
+    public static LinkedList<String> getDirectories_NonRecursive(File startDirectory, boolean includeStart) throws IOException {
+        LinkedList<String> done = new LinkedList<String>();
         File current = null;
         File[] currents = null;
-        final List<File> todo = new ArrayList<File>();
+        List<File> todo = new ArrayList<File>();
         todo.add(startDirectory);
         while (todo.size() > 0) {
             current = todo.remove(0);
@@ -61,7 +61,7 @@ public class Files {
             if (currents != null) {
                 for (int index = currents.length - 1; index >= 0; index--) {
                     if (currents[index].isDirectory()) {
-                        final String temp = currents[index].getCanonicalPath();
+                        String temp = currents[index].getCanonicalPath();
                         if (!done.contains(temp)) {
                             todo.add(currents[index]);
                         }
@@ -79,7 +79,7 @@ public class Files {
     /**
      * returns File if it exists (case (In)Sensitive). returns null if file does not exist
      */
-    public static File getExistingFile(final File file, final boolean caseSensitive) {
+    public static File getExistingFile(File file, boolean caseSensitive) {
         if (file == null) {
             return null;
         }
@@ -90,12 +90,12 @@ public class Files {
             return null;
         }
         /* get list of files in current directory */
-        final String lowerCaseFileName = file.getName().toLowerCase();
-        final File parent = file.getParentFile();
+        String lowerCaseFileName = file.getName().toLowerCase();
+        File parent = file.getParentFile();
         if (parent != null) {
-            final File[] list = parent.listFiles();
+            File[] list = parent.listFiles();
             if (list != null) {
-                for (final File ret : list) {
+                for (File ret : list) {
                     if (ret.getName().equalsIgnoreCase(lowerCaseFileName)) {
                         return ret;
                     }
@@ -112,20 +112,20 @@ public class Files {
      * @param name
      * @return
      */
-    public static String getExtension(final String name) {
+    public static String getExtension(String name) {
         if (StringUtils.isEmpty(name)) {
             return null;
         }
-        final int index = name.lastIndexOf(".");
+        int index = name.lastIndexOf(".");
         if (index < 0 || index + 1 >= name.length()) {
             return null;
         }
         return name.substring(index + 1).toLowerCase(Locale.ENGLISH);
     }
 
-    public static String getFileNameWithoutExtension(final String filename) {
+    public static String getFileNameWithoutExtension(String filename) {
 
-        final int index = filename.lastIndexOf(".");
+        int index = filename.lastIndexOf(".");
         if (index < 0) {
             return filename;
         }
@@ -139,11 +139,11 @@ public class Files {
      * @param files
      * @return
      */
-    public static List<File> getFiles(final boolean includeDirectories, final boolean includeFiles, final File... files) {
-        return Files.getFiles(new FileFilter() {
+    public static List<File> getFiles(boolean includeDirectories, boolean includeFiles, File... files) {
+        return getFiles(new FileFilter() {
 
             @Override
-            public boolean accept(final File pathname) {
+            public boolean accept(File pathname) {
                 if (includeDirectories && pathname.isDirectory()) {
                     return true;
                 }
@@ -152,10 +152,10 @@ public class Files {
         }, files);
     }
 
-    public static List<File> getFiles(final FileFilter filter, final File... files) {
-        final List<File> ret = new ArrayList<File>();
+    public static List<File> getFiles(FileFilter filter, File... files) {
+        List<File> ret = new ArrayList<File>();
         if (files != null) {
-            for (final File f : files) {
+            for (File f : files) {
                 if (!f.exists()) {
                     continue;
                 }
@@ -165,7 +165,7 @@ public class Files {
 
                 if (f.isDirectory()) {
 
-                    ret.addAll(Files.getFiles(filter, f.listFiles()));
+                    ret.addAll(getFiles(filter, f.listFiles()));
                 }
             }
         }
@@ -178,14 +178,14 @@ public class Files {
      * @param name
      * @return
      */
-    public static String getMimeType(final String name) {
+    public static String getMimeType(String name) {
         if (name == null) {
             return null;
         }
-        final FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String ret = fileNameMap.getContentTypeFor(name);
         if (ret == null) {
-            ret = "unknown/" + Files.getExtension(name);
+            ret = "unknown/" + getExtension(name);
         }
         return ret;
     }
@@ -193,11 +193,11 @@ public class Files {
     /**
      * Returns the relative path of file based on root.
      */
-    public static String getRelativePath(final File root, final File file) {
-        return Files.getRelativePath(root.getAbsolutePath(), file.getAbsolutePath());
+    public static String getRelativePath(File root, File file) {
+        return getRelativePath(root.getAbsolutePath(), file.getAbsolutePath());
     }
 
-    public static String getRelativePath(String root, final String file) {
+    public static String getRelativePath(String root, String file) {
 
         final String rootPath, filePath;
         if (CrossSystem.isWindows() || CrossSystem.isOS2()) {
@@ -234,54 +234,54 @@ public class Files {
         }
     }
 
-    public static <T extends Exception> void internalWalkThroughStructure(final Handler<T> handler, final File f) throws T {
+    public static <T extends Exception> void internalWalkThroughStructure(Handler<T> handler, File f) throws T {
         if (!f.exists()) {
             return;
         }
 
         handler.onFile(f);
         if (f.isDirectory()) {
-            final File[] files = f.listFiles();
+            File[] files = f.listFiles();
             if (files == null) {
                 return;
             }
-            for (final File sf : files) {
-                Files.internalWalkThroughStructure(handler, sf);
+            for (File sf : files) {
+                internalWalkThroughStructure(handler, sf);
             }
         }
     }
 
-    public static <T extends Exception> void internalWalkThroughStructureReverse(final Handler<T> handler, final File f) throws T {
+    public static <T extends Exception> void internalWalkThroughStructureReverse(Handler<T> handler, File f) throws T {
         if (!f.exists()) {
             return;
         }
         if (f.isDirectory()) {
-            final File[] files = f.listFiles();
+            File[] files = f.listFiles();
             if (files == null) {
                 return;
             }
-            for (final File sf : files) {
-                Files.walkThroughStructureReverse(handler, sf);
+            for (File sf : files) {
+                walkThroughStructureReverse(handler, sf);
             }
         }
         handler.onFile(f);
 
     }
 
-    public static <T extends Exception> void walkThroughStructure(final Handler<T> handler, final File f) throws T {
+    public static <T extends Exception> void walkThroughStructure(Handler<T> handler, File f) throws T {
         handler.intro(f);
         try {
-            Files.internalWalkThroughStructure(handler, f);
+            internalWalkThroughStructure(handler, f);
         } finally {
             handler.outro(f);
         }
 
     }
 
-    public static <T extends Exception> void walkThroughStructureReverse(final Handler<T> handler, final File f) throws T {
+    public static <T extends Exception> void walkThroughStructureReverse(Handler<T> handler, File f) throws T {
         handler.intro(f);
         try {
-            Files.internalWalkThroughStructureReverse(handler, f);
+            internalWalkThroughStructureReverse(handler, f);
         } finally {
             handler.outro(f);
         }
@@ -291,8 +291,8 @@ public class Files {
     public static File getCommonParent(File a, File b) {
         List<File> filesA = new LinkedList<File>();
         List<File> filesB = new LinkedList<File>();
-        Files.fill(filesA, a);
-        Files.fill(filesB, b);
+        fill(filesA, a);
+        fill(filesB, b);
         File last = null;
         String nameA, nameB;
         for (int i = 0; i < Math.min(filesA.size(), filesB.size()); i++) {
@@ -355,9 +355,9 @@ public class Files {
         void outro(File f) throws T;
     }
 
-    public static abstract class AbstractHandler<T extends Exception> implements Handler<T> {
+    public abstract static class AbstractHandler<T extends Exception> implements Handler<T> {
 
-        public void intro(final File f) {
+        public void intro(File f) {
 
         }
 
@@ -365,9 +365,9 @@ public class Files {
          * @param f
          * @throws IOException
          */
-        abstract public void onFile(File f) throws T;
+        public abstract void onFile(File f) throws T;
 
-        public void outro(final File f) {
+        public void outro(File f) {
 
         }
     }

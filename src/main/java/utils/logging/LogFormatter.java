@@ -14,71 +14,70 @@ import utils.os.CrossSystem;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
-import java.util.logging.SimpleFormatter;
 
-public class LogFormatter extends SimpleFormatter {
+public class LogFormatter extends Formatter {
     /**
      * Date to convert timestamp to a readable format
      */
-    private final Date date = new Date();
+    private static final Date date = new Date();
     /**
      * Dateformat to convert timestamp to a readable format
      */
-    private final DateFormat longTimestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
-    private final String NEWLINE = CrossSystem.getNewLine();
+    private static final DateFormat timeStamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+    private static final String NEWLINE = CrossSystem.getNewLine();
     /**
      * For thread controlled logs
      */
     private int lastThreadID;
 
+
+
     @Override
-    public synchronized String format(final LogRecord record) {
+    public final synchronized String format(LogRecord record) {
         /* clear StringBuilder buffer */
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(0);
 
         // Minimize memory allocations here.
-        this.date.setTime(record.getMillis());
+        date.setTime(record.getMillis());
 
-        final String message = this.formatMessage(record);
-        final int th = record.getThreadID();
+        String message = formatMessage(record);
+        int th = record.getThreadID();
 
-        if (th != this.lastThreadID) {
-            sb.append(NEWLINE);
-            sb.append("THREAD: ");
-            sb.append(th);
 
-            sb.append(NEWLINE);
+        if (th != lastThreadID) {
+            sb.append(NEWLINE).append("THREAD: ").append(th).append(NEWLINE);
         }
-        this.lastThreadID = th;
+        lastThreadID = th;
 
-        sb.append(record.getThreadID());
-        sb.append('|');
-        sb.append(record.getLoggerName());
-        sb.append(' ');
-        sb.append(this.longTimestamp.format(this.date));
-        sb.append(" - ");
-        sb.append(record.getLevel().getName());
-        sb.append(" [ ");
+        sb.append(record.getThreadID())
+                .append('|')
+                .append(record.getLoggerName())
+                .append(' ')
+                .append(timeStamp.format(date))
+                .append(" - ")
+                .append(record.getLevel().getName())
+                .append(" [ ");
         if (record.getSourceClassName() != null) {
             sb.append(record.getSourceClassName());
         } else {
             sb.append(record.getLoggerName());
         }
         if (record.getSourceMethodName() != null) {
-            sb.append('(');
-            sb.append(record.getSourceMethodName());
-            sb.append(')');
+            sb.append('(')
+                    .append(record.getSourceMethodName())
+                    .append(')');
         }
 
-        sb.append(" ] ");
-
-        sb.append("-> ");
-        sb.append(message);
-        sb.append(NEWLINE);
-        if (record.getThrown() != null) {
-            sb.append(Exceptions.getStackTrace(record.getThrown()));
-            sb.append(NEWLINE);
+        sb.append(" ] ")
+                .append("-> ")
+                .append(message)
+                .append(NEWLINE);
+        Throwable thrown = record.getThrown();
+        if (thrown != null) {
+            sb.append(Exceptions.getStackTrace(thrown))
+                    .append(NEWLINE);
         }
         return sb.toString();
     }

@@ -10,7 +10,7 @@
 package swing;
 
 
-import utils.Application;
+import org.apache.commons.lang3.SystemUtils;
 import utils.logging.Log;
 
 import javax.swing.*;
@@ -87,7 +87,7 @@ public abstract class EDTHelper<T> implements Runnable {
     public void run() {
         this.started = true;
         try {
-            if (Application.isHeadless()) {
+            if (SystemUtils.isJavaAwtHeadless()) {
                 if (this.caller != null) {
                     Log.exception(this.caller);
                 }
@@ -124,7 +124,7 @@ public abstract class EDTHelper<T> implements Runnable {
         if (this.started) {
             return;
         }
-        if (Application.isHeadless()) {
+        if (SystemUtils.isJavaAwtHeadless()) {
             this.caller = new Exception("EventDispatchThread in headless mode!?");
         }
         this.started = true;

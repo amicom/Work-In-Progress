@@ -1,5 +1,6 @@
 package utils.images;
 
+import org.apache.commons.lang3.SystemUtils;
 import swing.components.IDIcon;
 import swing.components.IconIdentifier;
 import utils.Application;
@@ -102,7 +103,7 @@ public class IconIO {
     }
 
     public static BufferedImage createEmptyImage(final int w, final int h) {
-        if (Application.isHeadless()) {
+        if (SystemUtils.isJavaAwtHeadless()) {
             final BufferedImage image = new BufferedImage(w, h, Transparency.BITMASK);
             return image;
         } else {
@@ -444,7 +445,7 @@ public class IconIO {
         }
         final int w = icon.getIconWidth();
         final int h = icon.getIconHeight();
-        if (Application.isHeadless()) {
+        if (SystemUtils.isJavaAwtHeadless()) {
 
             final BufferedImage image = new BufferedImage(w, h, Transparency.TRANSLUCENT);
             final Graphics2D g = image.createGraphics();

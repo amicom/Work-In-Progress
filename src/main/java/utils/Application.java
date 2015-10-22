@@ -15,7 +15,6 @@ import utils.exceptions.WTFException;
 import utils.logging.Log;
 import utils.os.CrossSystem;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,7 +34,8 @@ import java.util.regex.Pattern;
  *
  * @author $Author: unknown$
  */
-public class Application {
+public enum Application {
+    ;
 
     /**
      * @deprecated Use JavaVersion.JAVA_1_6
@@ -92,7 +92,7 @@ public class Application {
         return getRootByClass(Application.class, null);
     }
 
-    public static File lets(){
+    public static File lets() {
 
         return SystemUtils.getUserDir();
 //       return ClassPathUtils.toFullyQualifiedName(Application.class,"");
@@ -452,14 +452,4 @@ public class Application {
         return ret;
     }
 
-    /**
-     * @deprecated - use SystemUtils.isJavaAwtHeadless()
-     * @return true if JAVA_AWT_HEADLESS is "true", false otherwise
-     */
-    @Deprecated
-    public static boolean isHeadless() {
-
-        return GraphicsEnvironment.isHeadless();
-
-    }
 }

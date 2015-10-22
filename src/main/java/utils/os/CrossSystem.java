@@ -10,6 +10,7 @@
 package utils.os;
 
 
+import org.apache.commons.lang3.SystemUtils;
 import utils.Application;
 import utils.Regex;
 import utils.StringUtils;
@@ -49,7 +50,7 @@ public class CrossSystem {
 
     public static final OperatingSystem OS;
     public static final ARCHFamily ARCH;
-    private static final boolean __HEADLESS = Application.isHeadless();
+    private static final boolean __HEADLESS = SystemUtils.isJavaAwtHeadless();
     /**
      *
      */

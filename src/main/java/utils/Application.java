@@ -11,6 +11,9 @@ package utils;
 
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.exceptions.WTFException;
 import utils.logging.Log;
 import utils.os.CrossSystem;
@@ -26,7 +29,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 /**
@@ -58,6 +60,7 @@ public enum Application {
     private static final char DOT_CHAR = '.';
     private static final char NEW_CHAR = '/';
     private static final char NEW_LINE = '\n';
+    private static final Logger LOG = LogManager.getRootLogger();
     private static final Pattern COMPILE = Pattern.compile("\\.");
     private static final String NO_JAR_FOUND = "No JarName Found";
     private static final String APPLICATION_ROOT = "Application Root: ";
@@ -75,15 +78,7 @@ public enum Application {
         return appFolder;
     }
 
-    /**
-     * sets current Application Folder and Jar ID. MUST BE SET at startup! Can only be set once!
-     *
-     * @param newAppFolder the desired Application Folder
-     */
-    public static void setApplication(String newAppFolder) {
-        ROOT = null;
-        appFolder = newAppFolder;
-    }
+
 
     /**
      * @return the root location of the application
@@ -119,7 +114,7 @@ public enum Application {
     public static File getJarFile(Class<?> clazz) {
         URL url = getResourceURL(getClass(clazz));
         String path = url.getPath();
-        Log.L.info(String.valueOf(url));
+        LOG.info(String.valueOf(url));
         int index = path.indexOf(".jar!");
         //noinspection CallToStringEquals
         if (!"jar".equals(url.getProtocol()) || index < 0) {
@@ -128,7 +123,7 @@ public enum Application {
         try {
             return new File(new URL(path.substring(0, index + 4)).toURI());
         } catch (MalformedURLException | URISyntaxException e) {
-            Log.exception(Level.WARNING, e);
+            LOG.log(Level.WARN, e.getMessage());
         }
         return null;
     }
@@ -160,7 +155,7 @@ public enum Application {
             javaVersion = ver;
             return ver;
         } catch (NumberFormatException e) {
-            Log.exception(e);
+            LOG.catching(e);
             return -1;
         }
     }
